@@ -2,12 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { auth } from '@/app/firebase';
-import {
-    createUserWithEmailAndPassword,
-    onAuthStateChanged,
-    signInWithEmailAndPassword,
-    signOut,
-} from 'firebase/auth';
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -65,23 +60,11 @@ const Login = () => {
             <form>
                 <div>
                     <label>이메일 : </label>
-                    <input
-                        type="email"
-                        value={email}
-                        name="email"
-                        onChange={onChange}
-                        required
-                    ></input>
+                    <input type="email" value={email} name="email" onChange={onChange} required></input>
                 </div>
                 <div>
                     <label>비밀번호 : </label>
-                    <input
-                        type="password"
-                        value={password}
-                        name="password"
-                        onChange={onChange}
-                        required
-                    ></input>
+                    <input type="password" value={password} name="password" onChange={onChange} required></input>
                 </div>
                 <button onClick={signUp}>회원가입</button>
                 <button onClick={signIn}>로그인</button>
