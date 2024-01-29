@@ -2,7 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { auth } from '@/app/firebase';
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import {
+    browserSessionPersistence,
+    createUserWithEmailAndPassword,
+    onAuthStateChanged,
+    setPersistence,
+    signInWithEmailAndPassword,
+    signOut,
+} from 'firebase/auth';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -41,6 +48,7 @@ const Login = () => {
     const signIn = async (event: { preventDefault: () => void }) => {
         event.preventDefault();
         try {
+            setPersistence(auth, browserSessionPersistence); // 인증 지속성을 위해 추가
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             console.log('user with signIn', userCredential.user);
         } catch (error: any) {
