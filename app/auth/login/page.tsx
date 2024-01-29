@@ -10,8 +10,10 @@ import {
     signInWithEmailAndPassword,
     signOut,
 } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
 
 const Login = () => {
+    const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -35,7 +37,6 @@ const Login = () => {
 
     const signUp = async (event: { preventDefault: () => void }) => {
         event.preventDefault();
-
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             console.log('user', userCredential.user);
@@ -51,10 +52,12 @@ const Login = () => {
             setPersistence(auth, browserSessionPersistence); // 인증 지속성을 위해 추가
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             console.log('user with signIn', userCredential.user);
+            router.push('/'); // 로그인 성공하믄 홈으로 이동!
         } catch (error: any) {
             const errorCode = error.code;
             const errorMessage = error.message;
             console.log('error with signIn', errorCode, errorMessage);
+            alert('로그인 성공!');
         }
     };
     const logOut = async (event: { preventDefault: () => void }) => {
