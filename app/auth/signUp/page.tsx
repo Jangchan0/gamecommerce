@@ -1,13 +1,11 @@
 'use client';
 // 회원가입 /SignUp
-import { useEffect, useState } from 'react';
-import { auth } from '../../firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { signUpInfoState, signUpInfoSelector } from '@/recoil/atoms/recoilAtoms';
-import PositionToast from './toast';
 
 const SignUp = () => {
+    const router = useRouter();
     const [signUpInfo, setSignUpInfo] = useRecoilState(signUpInfoState);
     const signUpInfoFromSelector = useRecoilValue(signUpInfoSelector);
 
@@ -23,14 +21,11 @@ const SignUp = () => {
     // position 1 => 게임유저
     // position 2 => 개발자
 
-    // 토스트 추가중!!!!!!!
     const goToDetailInfo = () => {
         if (signUpInfoFromSelector.position !== 0) {
-            // 이동 로직 실행
-            console.log('이동 로직 실행');
+            router.push('signUp/Input');
         } else {
-            // PositionToast 컴포넌트 렌더링
-            <PositionToast />;
+            alert('포지션을 선택해주세요.');
         }
     };
 

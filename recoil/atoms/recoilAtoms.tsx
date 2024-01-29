@@ -8,6 +8,7 @@ export const signUpInfoState = atom({
         username: '',
         email: '',
         password: '',
+        confirmPassword: '',
         phoneAuth: false,
     },
 });

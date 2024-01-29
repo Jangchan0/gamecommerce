@@ -1,36 +1,111 @@
+'use client';
+import { useRecoilState } from 'recoil';
+import { signUpInfoState } from '@/recoil/atoms/recoilAtoms';
 import React from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { signUpInfoState, signUpInfoSelector } from '@/recoil/atoms/recoilAtoms';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from '@/app/firebase';
+import { setDoc, doc } from 'firebase/firestore';
+import { useRouter } from 'next/navigation';
 
-const SignInput = () => {
+const SignUpForm = () => {
+    const router = useRouter();
     const [signUpInfo, setSignUpInfo] = useRecoilState(signUpInfoState);
-    const signUpInfoFromSelector = useRecoilValue(signUpInfoSelector);
+    const [passwordMatchError, setPasswordMatchError] = React.useState(false);
 
-    const handleChange = (type: string, value: string | number) => {
+    const onEmailHandler = (e) => {
         setSignUpInfo((prevInfo) => ({
             ...prevInfo,
-            [type]: value,
+            email: e.target.value,
         }));
     };
 
+    const onNameHandler = (e) => {
+        setSignUpInfo((prevInfo) => ({
+            ...prevInfo,
+            username: e.target.value,
+        }));
+    };
+
+    const onPasswordHandler = (e) => {
+        setSignUpInfo((prevInfo) => ({
+            ...prevInfo,
+            password: e.target.value,
+        }));
+    };
+
+    const onConfirmPasswordHandler = (e) => {
+        setSignUpInfo((prevInfo) => ({
+            ...prevInfo,
+            confirmPassword: e.target.value,
+        }));
+    };
+
+    // 비밀번호 확인
+    React.useEffect(() => {
+        if (signUpInfo.password !== signUpInfo.confirmPassword && signUpInfo.confirmPassword.length > 0) {
+            setPasswordMatchError(true);
+        } else if (signUpInfo.password === signUpInfo.confirmPassword && signUpInfo.confirmPassword.length > 0) {
+            setPasswordMatchError(false);
+        }
+    }, [signUpInfo.confirmPassword, signUpInfo.password]);
+
+    const onSignUpHandler = async (e) => {
+        e.preventDefault();
+        if (
+            signUpInfo.email &&
+            signUpInfo.username &&
+            signUpInfo.password &&
+            signUpInfo.confirmPassword &&
+            !passwordMatchError
+        ) {
+            try {
+                const userDocRef = doc(db, 'users', signUpInfo.email);
+
+                await setDoc(userDocRef, {
+                    email: signUpInfo.email,
+                    username: signUpInfo.username,
+                    position: signUpInfo.position,
+                });
+                const userCredential = await createUserWithEmailAndPassword(
+                    auth,
+                    signUpInfo.email,
+                    signUpInfo.password
+                );
+
+                alert('회원가입 성공!');
+                router.push('/auth/login');
+            } catch (error: any) {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log('error with signUp', errorCode, errorMessage);
+                alert('회원가입 실패');
+            }
+        } else {
+            if (passwordMatchError) {
+                alert('비밀번호가 일치하지 않습니다');
+            } else {
+                alert('모든 정보를 입력해주세요');
+            }
+        }
+    };
+
     return (
-        <>
-            <div className="flex justify-center items-center w-[100vw] h-[100vh]">
-                <form className="flex flex-col">
-                    <label>Email</label>
-                    <input type="email" value={Email} onChange={onEmailHandler} />
-                    <label>Name</label>
-                    <input type="text" value={Name} onChange={onNameHandler} />
-                    <label>Password</label>
-                    <input type="password" value={Password} onChange={onPasswordHandler} />
-                    <label>Confirm Password</label>
-                    <input type="password" value={ConfirmPassword} onChange={onConfirmPasswordHandler} />
-                    <br />
-                    <button formAction="">회원가입</button>
-                </form>
-            </div>
-        </>
+        <form className="flex flex-col">
+            <label>Email</label>
+            <input type="email" value={signUpInfo.email} onChange={onEmailHandler} />
+            <label>Name</label>
+            <input type="text" value={signUpInfo.username} onChange={onNameHandler} />
+            <label>Password</label>
+            <input type="password" value={signUpInfo.password} onChange={onPasswordHandler} />
+            <label>Confirm Password</label>
+            <input type="password" value={signUpInfo.confirmPassword} onChange={onConfirmPasswordHandler} />
+
+            {passwordMatchError ? <p style={{ color: 'red' }}>비밀번호가 일치하지 않습니다.</p> : ''}
+
+            <br />
+            <button onClick={onSignUpHandler}>회원가입</button>
+        </form>
     );
 };
 
-export default SignInput;
+export default SignUpForm;
