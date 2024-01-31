@@ -11,6 +11,7 @@ const MyPage = () => {
     useEffect(() => {
         const auth = getAuth(app);
 
+        // fetchData -> useGet을 통해 user정보 수신 및 포지션 파악
         const fetchData = async (userEmail: string) => {
             try {
                 const userData = await UseGet(userEmail);
@@ -22,6 +23,7 @@ const MyPage = () => {
             }
         };
 
+        // 로그인 여부 확인 및 커스텀 훅에 유저의 이메일을 인자로 전달
         const loginVerification = onAuthStateChanged(auth, (user) => {
             if (!user) {
                 alert('로그인이 필요합니다');
