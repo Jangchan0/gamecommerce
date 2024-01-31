@@ -51,13 +51,13 @@ const Login = () => {
         try {
             setPersistence(auth, browserSessionPersistence); // 인증 지속성을 위해 추가
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            console.log('user with signIn', userCredential.user);
+            alert('로그인 성공!');
             router.push('/'); // 로그인 성공하믄 홈으로 이동!
         } catch (error: any) {
             const errorCode = error.code;
             const errorMessage = error.message;
+            alert('로그인 실패..');
             console.log('error with signIn', errorCode, errorMessage);
-            alert('로그인 성공!');
         }
     };
     const logOut = async (event: { preventDefault: () => void }) => {
