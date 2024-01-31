@@ -17,7 +17,24 @@ const MyPage = () => {
         });
         return () => loginVerification();
     }, [router]);
-    return <div>MyPage</div>;
+
+    // 개발자라면 판매게임 목록 / 찜목록 전환가능
+    // 게이머라면 찜목록
+
+    return (
+        <>
+            <div className="flex">
+                <div className="mypageTitle flex justify-between">
+                    <h2>My Page</h2>
+                    <div>게임등록+</div>
+                </div>
+                <div className="myGameList flex">
+                    <div></div>
+                </div>
+            </div>
+            <div />
+        </>
+    );
 };
 
 export default MyPage;
