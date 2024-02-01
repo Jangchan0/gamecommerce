@@ -3,23 +3,23 @@ import Link from 'next/link';
 
 const Nav = () => {
     const officialGame = [
-        { title: '오늘의 게임', link: '/today' },
-        { title: 'Best Game', link: '/best' },
-        { title: 'New Game', link: '/new' },
+        { title: '오늘의 영상', link: '/today' },
+        { title: 'Best video', link: '/best' },
+        { title: 'New video', link: '/new' },
         { title: 'With Friend', link: '/friends' },
         { title: '장르별', link: '/genres' },
     ];
     const developmentGame = [
-        { title: 'Up Coming', link: '/upcoming' },
+        { title: 'video request', link: '/request' },
         { title: 'Need To Feedback', link: '/needtofeedback' },
     ];
 
     return (
         <>
-            <div className="bg-slate-500 sticky left-0 top-0 h-[100vh] w-[250px] px-5 py-2 flex flex-col">
+            <div className="bg-slate-500 sticky left-0 top-0 h-[100vh] w-[250px] px-5 py-2 flex flex-col rounded-r-sm">
                 <h1 className="title text-4xl mb-11">Geagul</h1>
                 <div className="officialGame flex flex-col mb-10">
-                    <h2 className="text-xl mb-3 ">정식출시된</h2>
+                    <h2 className="text-xl mb-3 ">Category</h2>
                     <div className="pl-7 pt-2 ">
                         {officialGame.map((cate, i) => (
                             <Link key={i} href={cate.link}>
@@ -30,7 +30,7 @@ const Nav = () => {
                 </div>
 
                 <div className="developmentGame flex flex-col mb-10">
-                    <h2 className="text-xl mb-3 ">개발중인 게임</h2>
+                    <h2 className="text-xl mb-3 ">의뢰 & 피드백</h2>
                     <div className="pl-7 pt-2 ">
                         {developmentGame.map((cate, i) => (
                             <Link key={i} href={cate.link}>
@@ -47,7 +47,6 @@ const Nav = () => {
                         <p>유저 아이디</p>
                         <p>setting</p>
                     </div>
-                    <p>버전 정보</p>
                 </div>
             </div>
             <div />
