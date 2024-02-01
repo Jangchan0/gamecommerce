@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { app } from '../firebase';
-import { UseGet } from '@/Hooks/useGetDoc';
+import { UseGet } from '@/Hooks/UseGetDoc';
 
 const MyPage = () => {
     const router = useRouter();
@@ -46,11 +46,11 @@ const MyPage = () => {
                     <h2 className="componentTitle ">My Page</h2>
                     <div>게임등록+</div>
                 </div>
-                <div className="myGameList flex justify-between h-full">
-                    <div className="w-[50vw] bg-slate-300 h-[600px]">게임제작 목록</div>
+                <div className="myGameList flex justify-between min-h-[600px]">
+                    <div className="w-[50vw] bg-slate-300 ">게임제작 목록</div>
                     <div className=" w-[25vw] ml-[20px]">
-                        <div className="h-[290px] bg-slate-300 mb-[20px]">찜목록</div>
-                        <div className="h-[290px] bg-slate-200"> 유저 정보</div>
+                        <div className=" h-[60%] bg-slate-300 ">찜목록</div>
+                        <div className=" h-[40%] bg-slate-200"> 유저 정보</div>
                     </div>
                 </div>
             </div>
