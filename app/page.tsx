@@ -3,13 +3,14 @@ import GameList from '@/app/list/page';
 import './globals.css';
 import Nav from '@/components/nav/page';
 import MyPage from './mypage/page';
+import Registration from './registration/page';
 
 function App() {
     return (
         <>
             <div className="flex">
                 <Nav />
-                <MyPage />
+                <Registration />
             </div>
         </>
     );
