@@ -4,6 +4,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { app } from '../firebase';
 import { UseGet } from '@/Hooks/UseGetDoc';
+import MyVideoList from './myVideoList';
 
 const MyPage = () => {
     const router = useRouter();
@@ -44,10 +45,12 @@ const MyPage = () => {
             <div className="flex flex-col   mx-auto  my-auto">
                 <div className=" flex justify-between w-full mb-5 items-baseline">
                     <h2 className="componentTitle ">My Page</h2>
-                    <div>게임등록+</div>
+                    <div>영상등록+</div>
                 </div>
                 <div className="myGameList flex justify-between min-h-[600px]">
-                    <div className="w-[50vw] bg-slate-300 ">게임제작 목록</div>
+                    <div className="w-[50vw] bg-slate-300 ">
+                        <MyVideoList />
+                    </div>
                     <div className=" w-[25vw] ml-[20px]">
                         <div className=" h-[60%] bg-slate-300 ">찜목록</div>
                         <div className=" h-[40%] bg-slate-200"> 유저 정보</div>

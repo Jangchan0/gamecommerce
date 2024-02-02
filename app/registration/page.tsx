@@ -26,19 +26,20 @@ const Registration = () => {
 
     const uid = user?.uid;
 
-    const addVideo = async (videoInfo, thumbnailPaths, videoFileURL, videoId) => {
-        const videoCollectionRef = collection(db, 'video');
-        const videoDocRef = doc(videoCollectionRef, videoId);
+    const addVideo = async (videoInfo, thumbnailPaths, videoFileURL, uid) => {
+        const videoCollectionRef = doc(collection(db, 'Video', uid, 'List'));
+        const videoDocRef = doc(videoCollectionRef, uid, 'list');
 
         try {
-            await setDoc(videoDocRef, {
+            await setDoc(videoCollectionRef, {
                 ...videoInfo,
                 thumbnail: thumbnailPaths[0], // 첫 번째 썸네일을 메인 썸네일로 설정
                 videoFile: videoFileURL, // 게임 파일 URL 저장
                 timestamp: serverTimestamp(),
                 videoId: `${uid}_${videoInfo.영상명}`,
+                uploadUser: uid,
             });
-            return videoId;
+            return uid;
         } catch (error) {
             console.error('Error adding video document:', error);
             return null; // Return null or any other value to indicate failure
@@ -103,7 +104,7 @@ const Registration = () => {
             console.log('Video File Download URL:', videoDownloadURL);
 
             // 게임 데이터 저장
-            const videoId = await addVideo(videoInfo, [downloadURL], videoDownloadURL, `${uid}_${videoInfo.영상명}`);
+            const videoId = await addVideo(videoInfo, [downloadURL], videoDownloadURL, uid);
 
             // Use videoId here
         } catch (error) {

@@ -4,14 +4,17 @@ import './globals.css';
 import Nav from '@/components/nav/page';
 import MyPage from './mypage/page';
 import Registration from './registration/page';
+import QueryWrapper from './\bqueryWrapper';
 
 function App() {
     return (
         <>
-            <div className="flex">
-                <Nav />
-                <Registration />
-            </div>
+            <QueryWrapper>
+                <div className="flex">
+                    <Nav />
+                    <MyPage />
+                </div>
+            </QueryWrapper>
         </>
     );
 }
