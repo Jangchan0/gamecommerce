@@ -6,6 +6,7 @@ import { useInView } from 'react-intersection-observer';
 // import VideoItem from './VideoItem'; // VideoItem 컴포넌트는 각 영상을 나타내는 컴포넌트로 가정합니다.
 import { db } from '../firebase';
 import UseGetUserUid from '@/Hooks/UseGetUserUid';
+import ProductBox from './productBox';
 
 const MyVideos = () => {
     const uid = UseGetUserUid();
@@ -47,8 +48,6 @@ const MyVideos = () => {
         }
     }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-    console.log(data);
-
     return (
         <>
             <div>
@@ -59,6 +58,7 @@ const MyVideos = () => {
                                 <p>Video Name: {video.영상명}</p>
                                 <p>Genre: {video.장르}</p>
                                 {/* Add more properties as needed */}
+                                <ProductBox key={index} videoInfo={video} />
                             </div>
                         ))}
                     </React.Fragment>
