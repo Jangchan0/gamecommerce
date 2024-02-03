@@ -4,7 +4,7 @@ import './globals.css';
 import Nav from '@/components/nav/page';
 import MyPage from './mypage/page';
 import Registration from './registration/page';
-import QueryWrapper from './\bqueryWrapper';
+import QueryWrapper from './queryWrapper';
 
 function App() {
     return (

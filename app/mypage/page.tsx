@@ -42,13 +42,13 @@ const MyPage = () => {
 
     return (
         <>
-            <div className="flex flex-col   mx-auto  my-auto">
+            <div className="flex flex-col mx-auto my-auto ">
                 <div className=" flex justify-between w-full mb-5 items-baseline">
                     <h2 className="componentTitle ">My Page</h2>
                     <div>영상등록+</div>
                 </div>
-                <div className="myGameList flex justify-between min-h-[600px]">
-                    <div className="w-[50vw] bg-slate-300 ">
+                <div className="myGameList flex justify-between min-h-[600px] h-[80vh]">
+                    <div className="w-[50vw]  bg-slate-300 overflow-scroll">
                         <MyVideoList />
                     </div>
                     <div className=" w-[25vw] ml-[20px]">

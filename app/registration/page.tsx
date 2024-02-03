@@ -50,7 +50,6 @@ const Registration = () => {
     const [videoImg, setVideoImg] = useState([]);
 
     const handleThumbnailChange = (event) => {
-        console.log(event);
         let newThumbnails = thumbnails;
         const file = event.target.files[0];
 
