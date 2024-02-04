@@ -1,8 +1,20 @@
+'use client';
+
 import Image from 'next/image';
 import React from 'react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { videoInfoState } from '@/recoil/atoms/recoilAtoms';
 
 const ProductBox = (props) => {
     const { videoInfo } = props;
+    const router = useRouter();
+    console.log(videoInfo);
+
+    const MoveRevisePage = () => {
+        router.push('/revise');
+    };
 
     return (
         <div className="flex mb-3 p-4 bg-slate-200 ">
@@ -22,7 +34,9 @@ const ProductBox = (props) => {
                 <p>{videoInfo.영상소개}</p>
             </div>
             <div className="flex flex-col mx-auto">
-                <button className="buttonCustom">수정</button>
+                <button className="buttonCustom" onClick={MoveRevisePage}>
+                    수정
+                </button>
                 <button className="buttonCustom">삭제</button>
             </div>
         </div>

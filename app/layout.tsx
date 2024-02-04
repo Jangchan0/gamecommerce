@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import RecoilRootWrapper from './recoilRootWrapper';
+import QueryWrapper from './queryWrapper';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,9 +18,11 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <RecoilRootWrapper>
-                <body className={inter.className}>{children}</body>
-            </RecoilRootWrapper>
+            <QueryWrapper>
+                <RecoilRootWrapper>
+                    <body className={inter.className}>{children}</body>
+                </RecoilRootWrapper>
+            </QueryWrapper>
         </html>
     );
 }
