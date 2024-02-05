@@ -5,7 +5,7 @@ import Nav from '@/components/nav/page';
 import MyPage from './mypage/page';
 import Registration from './registration/page';
 
-import ReviseVideoInfo from './revise/page';
+import ReviseVideoInfo from './revise/[videoId]/page';
 
 function App() {
     return (

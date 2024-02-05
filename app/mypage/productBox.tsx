@@ -6,16 +6,24 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { videoInfoState } from '@/recoil/atoms/recoilAtoms';
+import UseAuthVerification from '@/Hooks/UseAuthVerification';
+import UseGetUserUid from '@/Hooks/UseGetUserUid';
 
 const ProductBox = (props) => {
     const { videoInfo } = props;
     const router = useRouter();
     console.log(videoInfo);
+    const userUid = UseGetUserUid();
 
     const MoveRevisePage = () => {
-        router.push('/revise');
-    };
+        if (userUid !== videoInfo.uploadUser) {
+            alert('영상을 업로드한 유저와 계정정보가 일치하지않습니다.');
+            router.push('/');
+            return;
+        }
 
+        router.push(`/revise/${videoInfo.videoId}`);
+    };
     return (
         <div className="flex mb-3 p-4 bg-slate-200 ">
             <div className="w-[250px] h-[150px] mr-5">
