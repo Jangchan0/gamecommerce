@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useRouter, usePathname } from 'next/navigation';
 import { db, storage } from '../../firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import ComponentTitle from '@/components/ComponentTitle';
 import UseAuthVerification from 'Hooks/UseAuthVerification';
 import Image from 'next/image';
@@ -12,7 +12,7 @@ import { collection, doc, getDoc, getDocs, query, serverTimestamp, setDoc, where
 const ReviseVideoInfo = () => {
     const router = useRouter();
     const videoQuery = usePathname();
-    const modifiedVideoId = videoQuery?.replace(/^.*\/revise\//, '');
+    const modifiedVideoId = decodeURIComponent(videoQuery)?.replace(/^.*\/revise\//, '');
 
     UseAuthVerification();
 
@@ -29,7 +29,7 @@ const ReviseVideoInfo = () => {
 
     const uid = user?.uid;
 
-    const reviseVideo = async (videoInfo, thumbnailPaths, videoFileURL, uid) => {
+    const reviseVideo = async (videoInfo, thumbnailPaths, uid) => {
         const videoCollectionRef = collection(db, 'Video', uid, 'List');
         const q = query(videoCollectionRef, where('timestamp', '==', videoInfo.timestamp));
         const querySnapshot = await getDocs(q);
@@ -37,6 +37,7 @@ const ReviseVideoInfo = () => {
         if (!querySnapshot.empty) {
             const docId = querySnapshot.docs[0].id;
             const docRef = doc(db, 'Video', uid, 'List', docId);
+            const thumbnailStorageRef = ref(storage, `thumbnails/${uid}_${videoInfo.영상명}_thumbnail.jpg`);
 
             const updatedData = {
                 ...videoInfo,
@@ -48,6 +49,26 @@ const ReviseVideoInfo = () => {
 
             try {
                 await setDoc(docRef, updatedData, { merge: true });
+
+                await deleteObject(thumbnailStorageRef);
+                const snapshot = await uploadBytes(thumbnailStorageRef, thumbnails);
+
+                const oldVideoFilePath = videoInfo.videoFile
+                    .replace('https://firebasestorage.googleapis.com/v0/b/fir-geagul.appspot.com/o/', '')
+                    .split('?')[0];
+
+                const oldVideoRef = ref(storage, decodeURIComponent(oldVideoFilePath));
+                const oldVideoURL = await getDownloadURL(oldVideoRef);
+                const response = await fetch(oldVideoURL);
+                const blob = await response.blob();
+                console.log(blob);
+
+                // 다운로드한 영상 파일을 새로운 이름으로 업로드
+                const newVideoRef = ref(storage, `video/${uid}_${videoInfo.영상명}_videoFile.zip`);
+                await uploadBytes(newVideoRef, blob);
+
+                // 원본 영상 파일 삭제
+                await deleteObject(oldVideoRef);
                 return uid;
             } catch (error) {
                 console.error('Error updating video document:', error);
@@ -62,16 +83,18 @@ const ReviseVideoInfo = () => {
     const [videoFile, setVideoFile] = useState<Blob | Uint8Array | ArrayBuffer>();
     const [thumbnails, setThumbnails] = useState([null]);
     const [videoImg, setVideoImg] = useState([]);
+    console.log(videoImg);
 
     const handleThumbnailChange = (event) => {
+        // 업로드 이미지 변경 로직 수정필요!
         let newThumbnails = thumbnails;
         const file = event.target.files[0];
 
         if (file) {
             const url = URL.createObjectURL(file);
             newThumbnails = { url };
-            setVideoImg(newThumbnails);
-            setThumbnails(file);
+            setVideoImg(newThumbnails); // 인풋에 보여질 사진
+            setThumbnails(file); // 전송할 파일 담기
         }
     };
 
@@ -99,8 +122,8 @@ const ReviseVideoInfo = () => {
     const [reviseDetailInfo, setReviseDetailInfo] = useState(videoInfoDefaultValue);
 
     const extractNecessaryInfo = (sourceInfo) => {
-        const { 영상명, 영상소개, 판매여부, price } = sourceInfo;
-        return { 영상명, 영상소개, 판매여부, price };
+        const { 영상명, 장르, 영상소개, 판매여부, price } = sourceInfo;
+        return { 영상명, 장르, 영상소개, 판매여부, price };
     };
 
     const handleInputChange = (key: string, value: string | number | boolean) => {
@@ -146,14 +169,14 @@ const ReviseVideoInfo = () => {
         try {
             const snapshot = await uploadBytes(thumbnailStorageRef, thumbnails);
             const downloadURL = await getDownloadURL(snapshot.ref);
-            console.log('Thumbnail Download URL:', downloadURL);
+            // console.log('Thumbnail Download URL:', downloadURL);
 
-            const videonap = await uploadBytes(videotorageRef, videoFile as Blob | Uint8Array | ArrayBuffer);
-            const videoDownloadURL = await getDownloadURL(videonap.ref);
-            console.log('Video File Download URL:', videoDownloadURL);
+            // const videonap = await uploadBytes(videotorageRef, videoFile as Blob | Uint8Array | ArrayBuffer);
+            // const videoDownloadURL = await getDownloadURL(videonap.ref);
+            // console.log('Video File Download URL:', videoDownloadURL);
 
             // 게임 데이터 저장
-            const videoId = await reviseVideo(videoInfo, [downloadURL], videoDownloadURL, uid);
+            await reviseVideo(videoInfo, [downloadURL], uid);
 
             // Use videoId here
         } catch (error) {
@@ -180,7 +203,7 @@ const ReviseVideoInfo = () => {
                                 className="border p-16 rounded-md h-[500px] bg-white cursor-pointer hover:border-blue-500"
                             >
                                 <Image
-                                    src={videoInfo.thumbnail}
+                                    src={videoImg.url}
                                     alt="썸네일"
                                     width={500}
                                     height={500}

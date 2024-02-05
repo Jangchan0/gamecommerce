@@ -57,7 +57,6 @@ const Registration = () => {
             const url = URL.createObjectURL(file);
             newThumbnails = { url };
             setVideoImg(newThumbnails);
-
             setThumbnails(file);
         }
     };
@@ -102,7 +101,7 @@ const Registration = () => {
             const videoDownloadURL = await getDownloadURL(videonap.ref);
             console.log('Video File Download URL:', videoDownloadURL);
 
-            // 게임 데이터 저장
+            // 영상 데이터 저장
             const videoId = await addVideo(videoInfo, [downloadURL], videoDownloadURL, uid);
 
             // Use videoId here
