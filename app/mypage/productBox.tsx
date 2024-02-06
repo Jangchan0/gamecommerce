@@ -12,7 +12,7 @@ import UseGetUserUid from '@/Hooks/UseGetUserUid';
 const ProductBox = (props) => {
     const { videoInfo } = props;
     const router = useRouter();
-    console.log(videoInfo);
+
     const userUid = UseGetUserUid();
 
     const MoveRevisePage = () => {
@@ -33,7 +33,7 @@ const ProductBox = (props) => {
                     width={300}
                     height={300}
                     priority
-                    className="w-full h-full object-cover rounded-md"
+                    className="w-full 11h-full object-cover rounded-md"
                 />
             </div>
             <div className="flex flex-col gap-2 bg-slate-300 w-[300px]">

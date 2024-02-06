@@ -24,6 +24,8 @@ const ReviseVideoInfo = () => {
             setUser(user);
         });
 
+        setThumbnails(videoInfo.thumbnail);
+
         return () => unsubscribe();
     }, []);
 
@@ -50,6 +52,8 @@ const ReviseVideoInfo = () => {
             try {
                 await setDoc(docRef, updatedData, { merge: true });
 
+                /////// 수정 삭제 해야하는 부분!!! ///////
+
                 await deleteObject(thumbnailStorageRef);
                 const snapshot = await uploadBytes(thumbnailStorageRef, thumbnails);
 
@@ -61,7 +65,6 @@ const ReviseVideoInfo = () => {
                 const oldVideoURL = await getDownloadURL(oldVideoRef);
                 const response = await fetch(oldVideoURL);
                 const blob = await response.blob();
-                console.log(blob);
 
                 // 다운로드한 영상 파일을 새로운 이름으로 업로드
                 const newVideoRef = ref(storage, `video/${uid}_${videoInfo.영상명}_videoFile.zip`);
@@ -83,18 +86,17 @@ const ReviseVideoInfo = () => {
     const [videoFile, setVideoFile] = useState<Blob | Uint8Array | ArrayBuffer>();
     const [thumbnails, setThumbnails] = useState([null]);
     const [videoImg, setVideoImg] = useState([]);
-    console.log(videoImg);
+    const [isImageUpdated, setIsImageUpdated] = useState(false);
 
     const handleThumbnailChange = (event) => {
-        // 업로드 이미지 변경 로직 수정필요!
         let newThumbnails = thumbnails;
         const file = event.target.files[0];
-
         if (file) {
             const url = URL.createObjectURL(file);
             newThumbnails = { url };
             setVideoImg(newThumbnails); // 인풋에 보여질 사진
             setThumbnails(file); // 전송할 파일 담기
+            setIsImageUpdated(true); // 이미지가 업데이트되었음을 표시
         }
     };
 
@@ -203,17 +205,12 @@ const ReviseVideoInfo = () => {
                                 className="border p-16 rounded-md h-[500px] bg-white cursor-pointer hover:border-blue-500"
                             >
                                 <Image
-                                    src={videoImg.url}
+                                    src={isImageUpdated ? videoImg.url : videoInfo.thumbnail}
                                     alt="썸네일"
                                     width={500}
                                     height={500}
                                     className="w-full h-full object-cover rounded-md"
                                 />
-                                {/* {thumbnails.name ? (
-                                    ''
-                                ) : (
-                                    <span className="text-center">+ Click to select VideoThumbnail</span>
-                                )} */}
 
                                 <input
                                     type="file"
