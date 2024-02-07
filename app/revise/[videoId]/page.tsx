@@ -54,24 +54,6 @@ const ReviseVideoInfo = () => {
 
                 /////// 수정 삭제 해야하는 부분!!! ///////
 
-                await deleteObject(thumbnailStorageRef);
-                const snapshot = await uploadBytes(thumbnailStorageRef, thumbnails);
-
-                const oldVideoFilePath = videoInfo.videoFile
-                    .replace('https://firebasestorage.googleapis.com/v0/b/fir-geagul.appspot.com/o/', '')
-                    .split('?')[0];
-
-                const oldVideoRef = ref(storage, decodeURIComponent(oldVideoFilePath));
-                const oldVideoURL = await getDownloadURL(oldVideoRef);
-                const response = await fetch(oldVideoURL);
-                const blob = await response.blob();
-
-                // 다운로드한 영상 파일을 새로운 이름으로 업로드
-                const newVideoRef = ref(storage, `video/${uid}_${videoInfo.영상명}_videoFile.zip`);
-                await uploadBytes(newVideoRef, blob);
-
-                // 원본 영상 파일 삭제
-                await deleteObject(oldVideoRef);
                 return uid;
             } catch (error) {
                 console.error('Error updating video document:', error);
@@ -171,11 +153,11 @@ const ReviseVideoInfo = () => {
         try {
             const snapshot = await uploadBytes(thumbnailStorageRef, thumbnails);
             const downloadURL = await getDownloadURL(snapshot.ref);
-            // console.log('Thumbnail Download URL:', downloadURL);
+            console.log('Thumbnail Download URL:', downloadURL);
 
-            // const videonap = await uploadBytes(videotorageRef, videoFile as Blob | Uint8Array | ArrayBuffer);
-            // const videoDownloadURL = await getDownloadURL(videonap.ref);
-            // console.log('Video File Download URL:', videoDownloadURL);
+            const videonap = await uploadBytes(videotorageRef, videoFile as Blob | Uint8Array | ArrayBuffer);
+            const videoDownloadURL = await getDownloadURL(videonap.ref);
+            console.log('Video File Download URL:', videoDownloadURL);
 
             // 게임 데이터 저장
             await reviseVideo(videoInfo, [downloadURL], uid);
