@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useInfiniteQuery } from 'react-query';
 import { collection, query, getDocs, orderBy, limit, startAfter } from 'firebase/firestore';
 import { useInView } from 'react-intersection-observer';
@@ -9,6 +9,7 @@ import ProductBox from './productBox';
 
 const MyVideos = () => {
     const uid = UseGetUserUid();
+    const [forceUpdate, setForceUpdate] = useState(false);
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
         uid,
@@ -44,6 +45,17 @@ const MyVideos = () => {
         }
     }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+    const deleteVideoAndUpdateList = async (videoId) => {
+        try {
+            // Your deletion logic here...
+
+            // After successful deletion, update the list
+            setForceUpdate((prevState) => !prevState);
+        } catch (error) {
+            console.error('Error deleting document: ', error);
+        }
+    };
+
     return (
         <>
             <div>
@@ -51,7 +63,11 @@ const MyVideos = () => {
                     <React.Fragment key={pageIndex}>
                         {page.map((video, index) => (
                             <div key={index}>
-                                <ProductBox key={index} videoInfo={video} />
+                                <ProductBox
+                                    key={index}
+                                    videoInfo={video}
+                                    onDelete={(onDelete) => deleteVideoAndUpdateList(onDelete)}
+                                />
                             </div>
                         ))}
                     </React.Fragment>
