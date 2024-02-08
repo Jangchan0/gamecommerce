@@ -47,16 +47,11 @@ const ProductBox = (props) => {
                 deleteObject(ref(storage, desertVideoPath)),
                 deleteObject(ref(storage, desertThumbPath)),
             ]);
-
             alert('삭제완료!');
             onDelete(videoId);
         } catch (error) {
             console.error('Error deleting document: ', error);
         }
-    };
-
-    const a = () => {
-        console.log(videoInfo);
     };
 
     // 문서 삭제     storage thumbnail, video 삭제
