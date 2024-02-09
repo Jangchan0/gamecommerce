@@ -84,7 +84,6 @@ const Registration = () => {
     const isAllPropertiesFilled = (videoInfo) => {
         return Object.values(videoInfo).every((value) => value !== '');
     };
-    console.log(videoInfo);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
