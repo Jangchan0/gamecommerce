@@ -47,10 +47,7 @@ const MyVideos = () => {
 
     const deleteVideoAndUpdateList = async (videoId) => {
         try {
-            // Your deletion logic here...
-
-            // After successful deletion, update the list
-            setForceUpdate((prevState) => !prevState);
+            setForceUpdate((prevState) => !prevState); // state 변경으로 재랜더링 (리스트 업데이트)
         } catch (error) {
             console.error('Error deleting document: ', error);
         }
