@@ -81,9 +81,23 @@ const Registration = () => {
             [key]: value,
         }));
     };
+    const isAllPropertiesFilled = (videoInfo) => {
+        return Object.values(videoInfo).every((value) => value !== '');
+    };
+    console.log(videoInfo);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!isAllPropertiesFilled(videoInfo)) {
+            alert('모든 정보를 작성해주세요');
+            return;
+        }
+
+        // Check if both video file and thumbnail are selected
+        if (!videoFile || !thumbnails) {
+            alert('영상 파일과 썸네일을 선택해주세요');
+            return;
+        }
 
         // 썸네일 업로드
         const thumbnailStorageRef = ref(storage, `thumbnails/${uid}_${videoInfo.영상명}_thumbnail.jpg`);
@@ -186,6 +200,25 @@ const Registration = () => {
                                             className="w-[300px] h-[100px] rounded-sm"
                                             style={{ resize: 'none' }}
                                         />
+                                    ) : key === '장르' ? (
+                                        <select
+                                            value={value as string}
+                                            onChange={(e) => handleInputChange(key, e.target.value)}
+                                            className="w-[300px] rounded-sm"
+                                        >
+                                            <option value="" disabled>
+                                                --장르를 선택해주세요--
+                                            </option>
+                                            <option value="쇼핑">쇼핑</option>
+                                            <option value="게임">게임</option>
+                                            <option value="스포츠">스포츠</option>
+                                            <option value="음악">음악</option>
+                                            <option value="영화">영화</option>
+                                            <option value="여행">여행</option>
+                                            <option value="생활">생활</option>
+                                            <option value="자연">자연</option>
+                                            <option value="기타">기타</option>
+                                        </select>
                                     ) : (
                                         // Default text input
                                         <input
