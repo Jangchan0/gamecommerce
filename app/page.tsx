@@ -4,15 +4,15 @@ import './globals.css';
 import Nav from '@/components/nav/page';
 import MyPage from './mypage/page';
 import Registration from './registration/page';
-
 import ReviseVideoInfo from './revise/[videoId]/page';
+import MainLandingPage from '@/components/mainLanding/page';
 
 function App() {
     return (
         <>
             <div className="flex">
                 <Nav />
-                <ReviseVideoInfo />
+                <MainLandingPage />
             </div>
         </>
     );
