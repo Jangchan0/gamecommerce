@@ -5,14 +5,18 @@ import Nav from '@/components/nav/page';
 import MyPage from './mypage/page';
 import Registration from './registration/page';
 import ReviseVideoInfo from './revise/[videoId]/page';
-import MainLandingPage from '@/components/mainLanding/page';
+import Carousel from '@/components/mainLanding/Carousel';
 
 function App() {
     return (
         <>
             <div className="flex">
                 <Nav />
-                <MainLandingPage />
+                <div className="flex flex-col w-full">
+                    <div className="recommedVideo mt-12">
+                        <Carousel />
+                    </div>
+                </div>
             </div>
         </>
     );
