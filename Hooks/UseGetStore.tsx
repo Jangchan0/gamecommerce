@@ -2,8 +2,8 @@
 import { db } from '@/app/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
-const UseGet = (userEmail: string) => {
-    const docRef = doc(db, 'users', userEmail);
+const UseGetStore = (collection: string, docName: string) => {
+    const docRef = doc(db, collection, docName);
 
     return getDoc(docRef)
         .then((docSnap) => {
@@ -20,4 +20,4 @@ const UseGet = (userEmail: string) => {
         });
 };
 
-export { UseGet };
+export { UseGetStore };

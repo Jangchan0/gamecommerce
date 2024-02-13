@@ -39,6 +39,7 @@ const Registration = () => {
                 timestamp: serverTimestamp(),
                 videoId: `${uid}_${gameInfo.게임명}`,
                 uploadUser: uid,
+                downloadTime: 0,
             });
             return uid;
         } catch (error) {

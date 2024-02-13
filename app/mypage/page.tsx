@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { app } from '../firebase';
-import { UseGet } from '@/Hooks/UseGetDoc';
+import { UseGetStore } from '@/Hooks/UseGetStore';
 import MyVideoList from './myVideoList';
 
 const MyPage = () => {
@@ -15,7 +15,7 @@ const MyPage = () => {
         // fetchData -> useGet을 통해 user정보 수신 및 포지션 파악
         const fetchData = async (userEmail: string) => {
             try {
-                const userData = await UseGet(userEmail);
+                const userData = await UseGetStore('users', userEmail);
                 if (userData) {
                     setUserPosition(userData.position);
                 }
