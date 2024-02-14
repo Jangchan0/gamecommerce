@@ -65,7 +65,7 @@ const ProductBox = (props) => {
                     width={300}
                     height={300}
                     priority
-                    className="w-full 11h-full object-cover rounded-md"
+                    className="w-full h-full object-contain rounded-md"
                 />
             </div>
             <div className="flex flex-col gap-2 bg-slate-300 w-[300px]">
