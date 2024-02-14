@@ -65,7 +65,7 @@ export default class Carousel extends Component {
 
     render() {
         return (
-            <div className="carousel w-[700px] h-[300px] bg-slate-500">
+            <div className="carousel w-[700px] h-[300px] bg-slate-500 mx-auto">
                 <Slider {...this.settings}>
                     {this.state.gameItem.map((item) => (
                         <CarouselItems key={item.gameData.게임명} videoItem={item} />
