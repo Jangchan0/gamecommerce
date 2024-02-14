@@ -39,14 +39,14 @@ const ReviseVideoInfo = () => {
         if (!querySnapshot.empty) {
             const docId = querySnapshot.docs[0].id;
             const docRef = doc(db, 'Video', uid, 'List', docId);
-            const thumbnailStorageRef = ref(storage, `thumbnails/${uid}_${videoInfo.영상명}_thumbnail.jpg`);
+            const thumbnailStorageRef = ref(storage, `thumbnails/${uid}_${videoInfo.게임명}_thumbnail.jpg`);
 
             const updatedData = {
                 ...videoInfo,
                 ...reviseDetailInfo,
                 thumbnail: thumbnailPaths[0], // 첫 번째 썸네일을 메인 썸네일로 설정
                 timestamp: serverTimestamp(),
-                videoId: `${uid}_${videoInfo.영상명}`,
+                videoId: `${uid}_${videoInfo.게임명}`,
             };
 
             try {
@@ -88,26 +88,26 @@ const ReviseVideoInfo = () => {
         uploadUser: '',
         videoFile: '',
         videoId: '',
-        영상명: '',
-        영상소개: '',
+        게임명: '',
+        게임소개: '',
         장르: '',
         판매여부: false,
     };
 
     const videoInfoDefaultValue = {
-        price: 0,
-        영상명: '',
-        영상소개: '',
+        게임명: '',
+        게임소개: '',
         장르: '',
-        판매여부: false,
+        price: 0,
+        재고수량: 0,
     };
 
     const [videoInfo, setVideoInfo] = useState(initialVideoInfo);
     const [reviseDetailInfo, setReviseDetailInfo] = useState(videoInfoDefaultValue);
 
     const extractNecessaryInfo = (sourceInfo) => {
-        const { 영상명, 장르, 영상소개, 판매여부, price } = sourceInfo;
-        return { 영상명, 장르, 영상소개, 판매여부, price };
+        const { 게임명, 장르, 게임소개, 판매여부, 재고수량, price } = sourceInfo;
+        return { 게임명, 장르, 게임소개, 판매여부, 재고수량, price };
     };
 
     const handleInputChange = (key: string, value: string | number | boolean) => {
@@ -144,8 +144,8 @@ const ReviseVideoInfo = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const thumbnailStorageRef = ref(storage, `thumbnails/${uid}_${videoInfo.영상명}_thumbnail.jpg`);
-        const videotorageRef = ref(storage, `video/${uid}_${videoInfo.영상명}_videoFile.zip`);
+        const thumbnailStorageRef = ref(storage, `thumbnails/${uid}_${videoInfo.게임명}_thumbnail.jpg`);
+        const videotorageRef = ref(storage, `video/${uid}_${videoInfo.게임명}_videoFile.zip`);
         // const metadata = {
         //     contentType: 'image/jpeg',
         // };
@@ -175,10 +175,10 @@ const ReviseVideoInfo = () => {
                 <div className="flex justify-between">
                     <div className="flex flex-col bg-gray-200 p-4 rounded-md">
                         <label htmlFor="videoUpload" className="mb-2 font-bold">
-                            Upload Video:
+                            Upload GameVideo:
                         </label>
                         <div className="border p-2 rounded-md bg-white">
-                            <span>{videoInfo.videoId ? '수정할 파일: ' + videoInfo.영상명 : 'No file selected'}</span>
+                            <span>{videoInfo.videoId ? '수정할 파일: ' + videoInfo.게임명 : 'No file selected'}</span>
                         </div>
 
                         <div className="photoThumbnail flex flex-col w-[50vw] mt-4 space-y-4">
@@ -209,17 +209,7 @@ const ReviseVideoInfo = () => {
                             {Object.entries(reviseDetailInfo).map(([key, value]) => (
                                 <div key={key} className="mb-4 ">
                                     <label className="mr-2 block">{key}</label>
-                                    {key === '판매여부' ? (
-                                        // Checkbox for 'isDemo'
-                                        <input
-                                            type="checkbox"
-                                            checked={value as boolean}
-                                            onChange={() => handleInputChange(key, !value)}
-                                        />
-                                    ) : key === 'price' && !videoInfo['판매여부'] ? (
-                                        // Label and input for 'price' only when 'isDemo' is true
-                                        (videoInfo.price = 0)
-                                    ) : key === '영상소개' ? (
+                                    {key === '게임소개' ? (
                                         <textarea
                                             value={value as string}
                                             onChange={(e) => handleInputChange(key, e.target.value)}
@@ -238,7 +228,7 @@ const ReviseVideoInfo = () => {
                                 </div>
                             ))}
                             <button type="submit" className="w-[200px] h-[50px] bg-slate-500 rounded-md mt-10">
-                                영상글 수정
+                                판매글 수정
                             </button>
                         </form>
                     </div>
