@@ -1,14 +1,16 @@
 'use client';
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import CarouselItems from './CarouselItems';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { storage } from '@/app/firebase';
-import { getDownloadURL, getStorage, listAll, ref } from 'firebase/storage';
+import { storage } from '../../app/firebase';
+import { getDownloadURL, listAll, ref } from 'firebase/storage';
+import { collection, doc, getDoc } from 'firebase/firestore';
+import { db } from '../../app/firebase';
 
 const getRandomFileNames = async () => {
-    const storageRef = ref(storage, 'video');
+    const storageRef = ref(storage, 'thumbnails');
     const allFiles = await listAll(storageRef);
 
     const selectedVideoFileNames = [];
@@ -22,46 +24,51 @@ const getRandomFileNames = async () => {
     return selectedVideoFileNames;
 };
 
-const Items = getRandomFileNames();
-
-// Import necessary modules
-
 export default class Carousel extends Component {
-    state: { videoItems: never[] };
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            videoItems: [],
-        };
-    }
-
-    async componentDidMount() {
-        try {
-            const selectedVideoFileNames = await getRandomFileNames();
-            this.setState({ videoItems: selectedVideoFileNames });
-        } catch (error) {
-            console.error('Error fetching random file names:', error);
-        }
-    }
-    setState(arg0: { videoItems: string[] }) {
-        throw new Error('Method not implemented.');
-    }
+    state = {
+        gameItem: [],
+    };
 
     settings = {
         className: 'center',
         centerMode: true,
         infinite: true,
         centerPadding: '60px',
-        slidesToShow: 3,
+        slidesToShow: 1,
         speed: 500,
     };
 
+    async componentDidMount() {
+        const items = await getRandomFileNames();
+        const gameItem = await Promise.all(
+            items.map(async (fileName) => {
+                const gameRef = doc(collection(db, 'Game'), fileName);
+                const gameSnapshot = await getDoc(gameRef);
+                const gameData = gameSnapshot.data();
+
+                const thumbnailRef = ref(storage, `thumbnails/${fileName}`);
+                const thumbnailURL = await getDownloadURL(thumbnailRef);
+
+                const videoRef = ref(storage, `video/${fileName}`);
+                const videoURL = await getDownloadURL(videoRef);
+
+                return {
+                    gameData,
+                    thumbnailURL,
+                    videoURL,
+                };
+            })
+        );
+
+        this.setState({ gameItem });
+    }
+
     render() {
         return (
-            <div className="carousel w-[700px] bg-slate-500">
+            <div className="carousel w-[700px] h-[300px] bg-slate-500">
                 <Slider {...this.settings}>
-                    {this.state.videoItems.map((item, i) => (
-                        <Carousel Items key={i} videoItem={item} />
+                    {this.state.gameItem.map((item) => (
+                        <CarouselItems key={item.gameData.게임명} videoItem={item} />
                     ))}
                 </Slider>
             </div>

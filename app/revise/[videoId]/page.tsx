@@ -46,7 +46,7 @@ const ReviseVideoInfo = () => {
                 ...reviseDetailInfo,
                 thumbnail: thumbnailPaths[0], // 첫 번째 썸네일을 메인 썸네일로 설정
                 timestamp: serverTimestamp(),
-                videoId: `${uid}_${videoInfo.게임명}`,
+                gameId: `${uid}_${videoInfo.게임명}`,
             };
 
             try {
@@ -87,7 +87,7 @@ const ReviseVideoInfo = () => {
         thumbnail: '',
         uploadUser: '',
         videoFile: '',
-        videoId: '',
+        gameId: '',
         게임명: '',
         게임소개: '',
         장르: '',
@@ -121,7 +121,7 @@ const ReviseVideoInfo = () => {
         const fetchData = async () => {
             try {
                 const videoCollectionRef = collection(db, 'Video', uid, 'List');
-                const q = query(videoCollectionRef, where('videoId', '==', modifiedVideoId));
+                const q = query(videoCollectionRef, where('gameId', '==', modifiedVideoId));
                 const querySnapshot = await getDocs(q);
 
                 const data = querySnapshot.docs[0].data();
@@ -162,7 +162,7 @@ const ReviseVideoInfo = () => {
             // 게임 데이터 저장
             await reviseVideo(videoInfo, [downloadURL], uid);
 
-            // Use videoId here
+            // Use gameId here
         } catch (error) {
             console.error('Error uploading thumbnails or video file:', error);
         }
@@ -178,7 +178,7 @@ const ReviseVideoInfo = () => {
                             Upload GameVideo:
                         </label>
                         <div className="border p-2 rounded-md bg-white">
-                            <span>{videoInfo.videoId ? '수정할 파일: ' + videoInfo.게임명 : 'No file selected'}</span>
+                            <span>{videoInfo.gameId ? '수정할 파일: ' + videoInfo.게임명 : 'No file selected'}</span>
                         </div>
 
                         <div className="photoThumbnail flex flex-col w-[50vw] mt-4 space-y-4">

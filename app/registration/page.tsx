@@ -28,8 +28,8 @@ const Registration = () => {
     const uid = user?.uid;
 
     const addVideo = async (gameInfo, thumbnailPaths, videoFileURL, uid) => {
-        const videoCollectionRef = doc(collection(db, 'Game'));
-        // const videoDocRef = doc(videoCollectionRef, uid, 'list');
+        const gameId = `${uid}_${gameInfo.게임명}`;
+        const videoCollectionRef = doc(collection(db, 'Game'), gameId);
 
         try {
             await setDoc(videoCollectionRef, {
@@ -37,7 +37,7 @@ const Registration = () => {
                 thumbnail: thumbnailPaths[0], // 첫 번째 썸네일을 메인 썸네일로 설정
                 videoFile: videoFileURL, // 게임 파일 URL 저장
                 timestamp: serverTimestamp(),
-                videoId: `${uid}_${gameInfo.게임명}`,
+                gameId: gameId,
                 uploadUser: uid,
                 downloadTime: 0,
             });
@@ -115,12 +115,12 @@ const Registration = () => {
             const videoDownloadURL = await getDownloadURL(videonap.ref);
 
             // 영상 데이터 저장
-            const videoId = await addVideo(gameInfo, [downloadURL], videoDownloadURL, uid);
+            const gameId = await addVideo(gameInfo, [downloadURL], videoDownloadURL, uid);
 
             alert('게시글을 업로드했습니다!');
             router.push('registration');
 
-            // Use videoId here
+            // Use gameId here
         } catch (error) {
             console.error('Error uploading thumbnails or video file:', error);
         }
