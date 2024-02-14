@@ -8,6 +8,7 @@ import ComponentTitle from '@/components/ComponentTitle';
 import UseAuthVerification from 'Hooks/UseAuthVerification';
 import Image from 'next/image';
 import { collection, doc, serverTimestamp, setDoc } from 'firebase/firestore';
+import uploadImg from '@/public/uploadImg.png';
 
 const Registration = () => {
     const router = useRouter();
@@ -26,17 +27,17 @@ const Registration = () => {
 
     const uid = user?.uid;
 
-    const addVideo = async (videoInfo, thumbnailPaths, videoFileURL, uid) => {
-        const videoCollectionRef = doc(collection(db, 'Video', uid, 'List'));
-        const videoDocRef = doc(videoCollectionRef, uid, 'list');
+    const addVideo = async (gameInfo, thumbnailPaths, videoFileURL, uid) => {
+        const videoCollectionRef = doc(collection(db, 'Game'));
+        // const videoDocRef = doc(videoCollectionRef, uid, 'list');
 
         try {
             await setDoc(videoCollectionRef, {
-                ...videoInfo,
+                ...gameInfo,
                 thumbnail: thumbnailPaths[0], // 첫 번째 썸네일을 메인 썸네일로 설정
                 videoFile: videoFileURL, // 게임 파일 URL 저장
                 timestamp: serverTimestamp(),
-                videoId: `${uid}_${videoInfo.영상명}`,
+                videoId: `${uid}_${gameInfo.게임명}`,
                 uploadUser: uid,
             });
             return uid;
@@ -66,14 +67,14 @@ const Registration = () => {
     };
 
     const initialVideoInfo = {
-        영상명: '',
+        게임명: '',
         장르: '',
-        영상소개: '',
-        판매여부: false,
+        게임소개: '',
         price: 0,
+        재고수량: 0,
     };
 
-    const [videoInfo, setVideoInfo] = useState(initialVideoInfo);
+    const [gameInfo, setVideoInfo] = useState(initialVideoInfo);
 
     const handleInputChange = (key: string, value: string | number | boolean) => {
         setVideoInfo((prevVideoInfo) => ({
@@ -81,13 +82,13 @@ const Registration = () => {
             [key]: value,
         }));
     };
-    const isAllPropertiesFilled = (videoInfo) => {
-        return Object.values(videoInfo).every((value) => value !== '');
+    const isAllPropertiesFilled = (gameInfo) => {
+        return Object.values(gameInfo).every((value) => value !== '');
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!isAllPropertiesFilled(videoInfo)) {
+        if (!isAllPropertiesFilled(gameInfo)) {
             alert('모든 정보를 작성해주세요');
             return;
         }
@@ -99,8 +100,8 @@ const Registration = () => {
         }
 
         // 썸네일 업로드
-        const thumbnailStorageRef = ref(storage, `thumbnails/${uid}_${videoInfo.영상명}_thumbnail.jpg`);
-        const videotorageRef = ref(storage, `video/${uid}_${videoInfo.영상명}_videoFile.zip`);
+        const thumbnailStorageRef = ref(storage, `thumbnails/${uid}_${gameInfo.게임명}`);
+        const videotorageRef = ref(storage, `video/${uid}_${gameInfo.게임명}`);
         const metadata = {
             contentType: 'image/jpeg',
         };
@@ -108,14 +109,15 @@ const Registration = () => {
         try {
             const snapshot = await uploadBytes(thumbnailStorageRef, thumbnails, metadata);
             const downloadURL = await getDownloadURL(snapshot.ref);
-            console.log('Thumbnail Download URL:', downloadURL);
 
             const videonap = await uploadBytes(videotorageRef, videoFile as Blob | Uint8Array | ArrayBuffer);
             const videoDownloadURL = await getDownloadURL(videonap.ref);
-            console.log('Video File Download URL:', videoDownloadURL);
 
             // 영상 데이터 저장
-            const videoId = await addVideo(videoInfo, [downloadURL], videoDownloadURL, uid);
+            const videoId = await addVideo(gameInfo, [downloadURL], videoDownloadURL, uid);
+
+            alert('게시글을 업로드했습니다!');
+            router.push('registration');
 
             // Use videoId here
         } catch (error) {
@@ -130,7 +132,7 @@ const Registration = () => {
                 <div className="flex justify-between">
                     <div className="flex flex-col bg-gray-200 p-4 rounded-md">
                         <label htmlFor="videoUpload" className="mb-2 font-bold">
-                            Upload Video:
+                            Upload GameVideo:
                         </label>
                         <input
                             type="file"
@@ -142,19 +144,19 @@ const Registration = () => {
                         <div className="photoThumbnail flex flex-col w-[50vw] mt-4 space-y-4">
                             <label
                                 htmlFor={`thumbnail`}
-                                className="border p-16 rounded-md h-[500px] bg-white cursor-pointer hover:border-blue-500"
+                                className="border p-16 rounded-md h-[500px] bg-white cursor-pointer hover:border-blue-500 flex flex-col items-center justify-center"
                             >
                                 <Image
-                                    src={videoImg.url}
+                                    src={videoImg.url ? videoImg.url : uploadImg}
                                     alt="썸네일"
                                     width={500}
                                     height={500}
-                                    className="w-full h-full object-cover rounded-md"
+                                    className="w-[50%] h-[50%] object-contain rounded-md "
                                 />
                                 {thumbnails.name ? (
                                     ''
                                 ) : (
-                                    <span className="text-center">+ Click to select VideoThumbnail</span>
+                                    <span className="text-center mt-5">+ Click to select GameTumbnail or GamePack</span>
                                 )}
 
                                 <input
@@ -169,68 +171,60 @@ const Registration = () => {
                     <div className="VideoInfo bg-slate-300 w-[400px]">
                         {/* Video information form */}
                         <form onSubmit={handleSubmit} className="w-[300px] mx-auto pt-10 ">
-                            {Object.entries(videoInfo).map(([key, value]) => (
+                            {Object.entries(gameInfo).map(([key, value]) => (
                                 <div key={key} className="mb-4 ">
                                     <label className="mr-2 block">{key}</label>
-                                    {key === '연령제한' ? (
-                                        // Dropdown for 'age'
-                                        <select
-                                            value={value as string}
-                                            onChange={(e) => handleInputChange(key, e.target.value)}
-                                        >
-                                            <option value="전체 이용가">전체 이용가</option>
-                                            <option value="12세 이용가">12세 이용가</option>
-                                            <option value="15세 이용가">15세 이용가</option>
-                                        </select>
-                                    ) : key === '판매여부' ? (
-                                        // Checkbox for 'isDemo'
-                                        <input
-                                            type="checkbox"
-                                            checked={value as boolean}
-                                            onChange={() => handleInputChange(key, !value)}
-                                        />
-                                    ) : key === 'price' && !videoInfo['판매여부'] ? (
-                                        // Label and input for 'price' only when 'isDemo' is true
-                                        (videoInfo.price = 0)
-                                    ) : key === '영상소개' ? (
+                                    {key === '게임소개' ? (
                                         <textarea
                                             value={value as string}
+                                            placeholder="게임소개를 작성해주세요"
                                             onChange={(e) => handleInputChange(key, e.target.value)}
-                                            className="w-[300px] h-[100px] rounded-sm"
+                                            className="w-[300px] h-[100px] rounded-sm outline-none px-1"
+                                            style={{ resize: 'none' }}
+                                        />
+                                    ) : key === '게임명' ? (
+                                        <textarea
+                                            value={value as string}
+                                            placeholder="게임이름"
+                                            onChange={(e) => handleInputChange(key, e.target.value)}
+                                            className="w-[300px] h-[25px] rounded-sm outline-none px-1"
                                             style={{ resize: 'none' }}
                                         />
                                     ) : key === '장르' ? (
                                         <select
                                             value={value as string}
                                             onChange={(e) => handleInputChange(key, e.target.value)}
-                                            className="w-[300px] rounded-sm"
+                                            className="w-[300px] rounded-sm outline-none "
                                         >
                                             <option value="" disabled>
                                                 --장르를 선택해주세요--
                                             </option>
-                                            <option value="쇼핑">쇼핑</option>
-                                            <option value="게임">게임</option>
+                                            <option value="액션">액션</option>
+                                            <option value="어드벤처">어드벤처</option>
+                                            <option value="캐주얼">캐주얼</option>
+                                            <option value="인디">인디</option>
+                                            <option value="대규모">대규모</option>
+                                            <option value="멀티 플레이어">멀티 플레이어</option>
+                                            <option value="레이싱">레이싱</option>
+                                            <option value="시뮬레이션">시뮬레이션</option>
+                                            <option value="RPG">RPG</option>
                                             <option value="스포츠">스포츠</option>
-                                            <option value="음악">음악</option>
-                                            <option value="영화">영화</option>
-                                            <option value="여행">여행</option>
-                                            <option value="생활">생활</option>
-                                            <option value="자연">자연</option>
+                                            <option value="전략">전략</option>
                                             <option value="기타">기타</option>
                                         </select>
                                     ) : (
                                         // Default text input
                                         <input
-                                            type="text"
-                                            value={value as string}
+                                            value={value.toLocaleString('ko-KR') as Number}
                                             onChange={(e) => handleInputChange(key, e.target.value)}
-                                            className="w-[300px] rounded-sm"
+                                            className="w-[300px] rounded-sm outline-none px-1"
+                                            placeholder={key === 'price' ? '가격작성' : '재고수량'}
                                         />
                                     )}
                                 </div>
                             ))}
-                            <button type="submit" className="w-[200px] h-[50px] bg-slate-500 rounded-md mt-10">
-                                영상글 게시
+                            <button type="submit" className="w-[300px] h-[50px] bg-slate-500 rounded-md mt-10">
+                                판매글 게시
                             </button>
                         </form>
                     </div>

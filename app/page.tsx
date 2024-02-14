@@ -12,7 +12,7 @@ function App() {
         <>
             <div className="flex">
                 <Nav />
-                <ReviseVideoInfo />
+                <Registration />
             </div>
         </>
     );
