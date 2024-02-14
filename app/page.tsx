@@ -1,4 +1,3 @@
-import React from 'react';
 import Login from '@/app/auth/login/page';
 import GameList from '@/app/list/page';
 import './globals.css';
@@ -7,14 +6,15 @@ import MyPage from './mypage/page';
 import Registration from './registration/page';
 import ReviseVideoInfo from './revise/[videoId]/page';
 import Carousel from '@/components/mainLanding/Carousel';
+import React from 'react';
 
 function App() {
     return (
         <>
             <div className="flex">
                 <Nav />
-                <div className="flex flex-col mx-auto">
-                    <div className="recommedVideo w-full h-[350px] mt-12">
+                <div className="flex flex-col w-full">
+                    <div className="recommedVideo mt-12">
                         <Carousel />
                     </div>
                 </div>
