@@ -1,10 +1,10 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useInfiniteQuery } from 'react-query';
-import { collection, query, getDocs, orderBy, limit, startAfter } from 'firebase/firestore';
+import { collection, query, getDocs, orderBy, limit, startAfter, where } from 'firebase/firestore';
 import { useInView } from 'react-intersection-observer';
 import { db } from '../firebase';
-import UseGetUserUid from '@/Hooks/UseGetUserUid';
+import UseGetUserUid from '../../Hooks/UseGetUserUid';
 import ProductBox from './productBox';
 
 const MyVideos = () => {
@@ -14,15 +14,20 @@ const MyVideos = () => {
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
         uid,
         async ({ pageParam = null }) => {
-            const videoCollectionRef = collection(db, 'Video', uid, 'List');
+            const videoCollectionRef = collection(db, 'Game');
 
             const q = pageParam
-                ? query(videoCollectionRef, orderBy('timestamp', 'desc'), startAfter(pageParam), limit(5))
-                : query(videoCollectionRef, orderBy('timestamp', 'desc'), limit(5));
+                ? query(
+                      videoCollectionRef,
+                      limit(5),
+                      where('uploadUser', '==', uid),
+                      orderBy('timestamp', 'desc'),
+                      startAfter(pageParam)
+                  )
+                : query(videoCollectionRef, limit(5), where('uploadUser', '==', uid), orderBy('timestamp', 'desc'));
 
             const querySnapshot = await getDocs(q);
             const videos = querySnapshot.docs.map((doc) => doc.data());
-
             return videos;
         },
         {
