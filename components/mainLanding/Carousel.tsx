@@ -24,6 +24,28 @@ const getRandomFileNames = async () => {
     return selectedVideoFileNames;
 };
 
+function SampleNextArrow(props) {
+    const { className, style, onClick } = props;
+    return (
+        <div
+            className={className}
+            style={{ ...style, display: 'block', background: 'gray', borderRadius: '50px', paddingTop: '1px' }}
+            onClick={onClick}
+        />
+    );
+}
+
+function SamplePrevArrow(props) {
+    const { className, style, onClick } = props;
+    return (
+        <div
+            className={className}
+            style={{ ...style, display: 'block', background: 'gray', borderRadius: '50px', paddingTop: '1px' }}
+            onClick={onClick}
+        />
+    );
+}
+
 export default class Carousel extends Component {
     state = {
         gameItem: [],
@@ -36,6 +58,8 @@ export default class Carousel extends Component {
         centerPadding: '60px',
         slidesToShow: 1,
         speed: 500,
+        nextArrow: <SampleNextArrow />,
+        prevArrow: <SamplePrevArrow />,
     };
 
     async componentDidMount() {
