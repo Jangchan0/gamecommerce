@@ -1,13 +1,3 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/tyTMe4RKwIL
- * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
-//  */
-// import { label } from "@/components/ui/label"
-// import { RadioGroupItem, RadioGroup } from "@/components/ui/radio-group"
-// import { SelectValue, SelectTrigger, SelectItem, SelectContent, Select } from "@/components/ui/select"
-// import { Button } from "@/components/ui/button"
-// import { Separator } from "@/components/ui/separator"
 import Link from 'next/link';
 
 export default function Component() {
