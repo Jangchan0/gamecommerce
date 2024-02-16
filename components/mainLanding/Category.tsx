@@ -26,72 +26,30 @@ export default function Category({ title }) {
                     <div className="flex items-center gap-4">
                         <h2 className="text-3xl font-bold">{title}</h2>
                         <nav className="flex ml-auto">
-                            <Link className="ml-4 font-medium underline" href="#">
+                            <Link className="ml-4 font-medium underline" href={`/list/${title}`}>
                                 더보기
                             </Link>
                         </nav>
                     </div>
                     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                        <div className="flex flex-col gap-2">
-                            <Link className="font-semibold" href="#">
-                                <img
-                                    alt="Image"
-                                    className="aspect-square object-cover border border-gray-200 rounded-lg overflow-hidden dark:border-gray-800"
-                                    height={180}
-                                    src="/placeholder.svg"
-                                    width={180}
-                                />
-                                {categoryData.게임명}
-                            </Link>
-                            <div className="font-semibold">$99</div>
-                            <div className="text-sm not-italic">by Acme Apparel</div>
-                            <div className="text-sm">T-Shirts</div>
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <Link className="font-semibold" href="#">
-                                <img
-                                    alt="Image"
-                                    className="aspect-square object-cover border border-gray-200 rounded-lg overflow-hidden dark:border-gray-800"
-                                    height={180}
-                                    src="/placeholder.svg"
-                                    width={180}
-                                />
-                                WhimsiMug: Sip in Style and Magic
-                            </Link>
-                            <div className="font-semibold">$99</div>
-                            <div className="text-sm not-italic">by Acme Apparel</div>
-                            <div className="text-sm">Mugs</div>
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <Link className="font-semibold" href="#">
-                                <img
-                                    alt="Image"
-                                    className="aspect-square object-cover border border-gray-200 rounded-lg overflow-hidden dark:border-gray-800"
-                                    height={180}
-                                    src="/placeholder.svg"
-                                    width={180}
-                                />
-                                Elegance Watch: Timeless Beauty
-                            </Link>
-                            <div className="font-semibold">$99</div>
-                            <div className="text-sm not-italic">by Acme Timepieces</div>
-                            <div className="text-sm">Watches</div>
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <Link className="font-semibold" href="#">
-                                <img
-                                    alt="Image"
-                                    className="aspect-square object-cover border border-gray-200 rounded-lg overflow-hidden dark:border-gray-800"
-                                    height={180}
-                                    src="/placeholder.svg"
-                                    width={180}
-                                />
-                                Sparkle Shoes: Walk in Glam
-                            </Link>
-                            <div className="font-semibold">$99</div>
-                            <div className="text-sm not-italic">by Acme Footwear</div>
-                            <div className="text-sm">Shoes</div>
-                        </div>
+                        {gameData.length > 0 &&
+                            gameData.map((item, index) => (
+                                <div key={index} className="flex flex-col gap-2 cursor-pointer">
+                                    <Link className="font-semibold" href={`/detail/${item.gameId}`}>
+                                        <img
+                                            alt="Image"
+                                            className="aspect-square object-cover border border-gray-200 rounded-lg overflow-hidden dark:border-gray-800"
+                                            height={180}
+                                            src={item.thumbnail}
+                                            width={180}
+                                        />
+                                        {item.게임명}
+                                    </Link>
+                                    <div className="font-semibold">${item.price}</div>
+                                    <div className="text-sm not-italic">by {item.uploadUser}</div>
+                                    <div className="text-sm">{item.게임소개}</div>
+                                </div>
+                            ))}
                     </div>
                 </div>
             </div>

@@ -1,6 +1,11 @@
+'use client';
+/* eslint-disable @next/next/no-img-element */
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-export default function Component() {
+export default function DetailPage() {
+    const videoQuery = usePathname();
+    const productId = decodeURIComponent(videoQuery)?.replace(/^.*\/detail\//, '');
     return (
         <>
             <div className="grid md:grid-cols-2 items-start max-w-6xl px-4 mx-auto gap-6 lg:gap-12 py-6">
