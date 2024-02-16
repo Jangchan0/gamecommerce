@@ -7,8 +7,11 @@ import Registration from './registration/page';
 import ReviseVideoInfo from './revise/[videoId]/page';
 import Carousel from '@/components/mainLanding/Carousel';
 import React from 'react';
+import Category from '@/components/mainLanding/Category';
 
 function App() {
+    const itemCategory = ['액션', 'RPG', '레이싱'];
+
     return (
         <>
             <div className="flex">
@@ -17,6 +20,9 @@ function App() {
                     <div className="recommedVideo mt-12">
                         <Carousel />
                     </div>
+                    {itemCategory.map((item) => {
+                        return <Category key={item} props={item} />;
+                    })}
                 </div>
             </div>
         </>
