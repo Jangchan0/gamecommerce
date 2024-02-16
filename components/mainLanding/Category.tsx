@@ -32,7 +32,8 @@ export default function Category({ title }) {
                         </nav>
                     </div>
                     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                        {gameData.length > 0 &&
+                        {gameData &&
+                            gameData.length > 0 &&
                             gameData.map((item, index) => (
                                 <div key={index} className="flex flex-col gap-2 cursor-pointer">
                                     <Link className="font-semibold" href={`/detail/${item.gameId}`}>
