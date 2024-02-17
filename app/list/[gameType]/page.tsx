@@ -30,11 +30,13 @@ export default function GameList() {
                 </select>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
-                {queryCategoryData &&
-                    queryCategoryData[domainCate].length > 0 &&
+                {queryCategoryData && queryCategoryData[domainCate] ? (
                     queryCategoryData[domainCate].map((item, index) => {
                         return <ListProductBox key={index} item={item} />;
-                    })}
+                    })
+                ) : (
+                    <div>검색결과가 없습니다.</div>
+                )}
             </div>
         </div>
     );
