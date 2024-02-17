@@ -4,7 +4,7 @@ import { getDoc, doc } from 'firebase/firestore';
 import { getDownloadURL, ref as storageRef } from 'firebase/storage';
 import { db, storage } from '../app/firebase';
 
-const useFileData = (fileName: string) => {
+const UseFileData = (fileName: string) => {
     const [fileData, setFileData] = useState(null);
 
     useEffect(() => {
@@ -40,4 +40,4 @@ const useFileData = (fileName: string) => {
     return fileData;
 };
 
-export default useFileData;
+export default UseFileData;

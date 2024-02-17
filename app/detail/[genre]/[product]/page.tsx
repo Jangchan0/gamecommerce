@@ -4,6 +4,7 @@ import UseFileDataRecommand from '@/Hooks/UseFileDataRecommand';
 /* eslint-disable @next/next/no-img-element */
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function DetailPage() {
     const videoQuery = usePathname();
@@ -12,17 +13,27 @@ export default function DetailPage() {
 
     // Extracting the encoded genre and the original productId from the URL
     const encodedGenre = productIdMatch ? decodeURIComponent(productIdMatch[1]) : null;
-    const originalProductId = productIdMatch ? productIdMatch[2] : null;
+    const originalProductId = productIdMatch ? decodeURIComponent(productIdMatch[2]) : null;
 
     // const productId = decodeURIComponent(videoQuery)?.replace(/^.*\/detail\//, '');
 
     const productInfo = useFileData(originalProductId);
     const gameData = productInfo?.gameData;
 
-    const recommandProduct = UseFileDataRecommand(encodedGenre);
+    // Use useEffect to fetch recommandProducts when the component mounts
+    const [recommandProducts, setRecommandProducts] = useState(null);
 
-    // 데이터 수신이 완료될때까지 대기
-    if (!productInfo) {
+    useEffect(() => {
+        const fetchRecommandProducts = async () => {
+            const products = await UseFileDataRecommand(encodedGenre);
+            setRecommandProducts(products);
+        };
+
+        fetchRecommandProducts();
+    }, [encodedGenre]);
+
+    // Wait for both productInfo and recommandProducts to be available
+    if (!productInfo || recommandProducts === null) {
         return <div>Loading...</div>;
     }
 
@@ -92,118 +103,47 @@ export default function DetailPage() {
                     </div>
                     <div className="flex justify-between gap-2 min-[400px]:flex-row">
                         <button>Add to cart</button>
-                        <button className="flex">
-                            <HeartIcon className="w-4 h-4 mr-2" />
-                            Add to wishlist
-                        </button>
+                        <button className="flex">❤️ Add to wishlist</button>
                     </div>
                 </div>
             </div>
-            <section className="recommandProduct grid grid-cols-1 md:grid-cols-4 gap-6 p-4 md:p-6">
-                <div className="relative group overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-transform duration-300 ease-in-out hover:-translate-y-2">
-                    <Link className="absolute inset-0 z-10" href="#">
-                        <span className="sr-only">View</span>
-                    </Link>
-                    <img
-                        alt="Product 1"
-                        className="object-cover w-full h-64"
-                        height={400}
-                        src="/placeholder.svg"
-                        style={{
-                            aspectRatio: '500/400',
-                            objectFit: 'cover',
-                        }}
-                        width={500}
-                    />
-                    <div className="bg-white p-4 dark:bg-gray-950">
-                        <h3 className="font-bold text-xl">Classic Leather Shoes</h3>
-                        <p className="text-sm text-gray-500">Elegant and comfortable</p>
-                        <h4 className="font-semibold text-lg md:text-xl">$59.99</h4>
-                    </div>
-                </div>
-                <div className="relative group overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-transform duration-300 ease-in-out hover:-translate-y-2">
-                    <Link className="absolute inset-0 z-10" href="#">
-                        <span className="sr-only">View</span>
-                    </Link>
-                    <img
-                        alt="Product 2"
-                        className="object-cover w-full h-64"
-                        height={400}
-                        src="/placeholder.svg"
-                        style={{
-                            aspectRatio: '500/400',
-                            objectFit: 'cover',
-                        }}
-                        width={500}
-                    />
-                    <div className="bg-white p-4 dark:bg-gray-950">
-                        <h3 className="font-bold text-xl">Designer Handbag</h3>
-                        <p className="text-sm text-gray-500">Fashion statement</p>
-                        <h4 className="font-semibold text-lg md:text-xl">$89.99</h4>
-                    </div>
-                </div>
-                <div className="relative group overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-transform duration-300 ease-in-out hover:-translate-y-2">
-                    <Link className="absolute inset-0 z-10" href="#">
-                        <span className="sr-only">View</span>
-                    </Link>
-                    <img
-                        alt="Product 3"
-                        className="object-cover w-full h-64"
-                        height={400}
-                        src="/placeholder.svg"
-                        style={{
-                            aspectRatio: '500/400',
-                            objectFit: 'cover',
-                        }}
-                        width={500}
-                    />
-                    <div className="bg-white p-4 dark:bg-gray-950">
-                        <h3 className="font-bold text-xl">Wireless Earbuds</h3>
-                        <p className="text-sm text-gray-500">Crystal clear audio</p>
-                        <h4 className="font-semibold text-lg md:text-xl">$69.99</h4>
-                    </div>
-                </div>
-                <div className="relative group overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-transform duration-300 ease-in-out hover:-translate-y-2">
-                    <Link className="absolute inset-0 z-10" href="#">
-                        <span className="sr-only">View</span>
-                    </Link>
-                    <img
-                        alt="Product 4"
-                        className="object-cover w-full h-64"
-                        height={400}
-                        src="/placeholder.svg"
-                        style={{
-                            aspectRatio: '500/400',
-                            objectFit: 'cover',
-                        }}
-                        width={500}
-                    />
-                    <div className="bg-white p-4 dark:bg-gray-950">
-                        <h3 className="font-bold text-xl">Vintage Pocket Watch</h3>
-                        <p className="text-sm text-gray-500">Antique charm</p>
-                        <h4 className="font-semibold text-lg md:text-xl">$79.99</h4>
-                    </div>
-                </div>
-            </section>
+            <div className="pl-12">
+                <h2 className="text-4xl font-bold p-4 mt-12">관련상품</h2>
+                <section className="recommandProduct grid grid-cols-1 md:grid-cols-4 gap-6 p-4 md:p-6">
+                    {recommandProducts.map((recommandProduct, index) => {
+                        console.log(recommandProduct);
+                        return (
+                            <div
+                                key={index}
+                                className="relative group overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-transform duration-300 ease-in-out hover:-translate-y-2"
+                            >
+                                <Link
+                                    className="absolute inset-0 z-10"
+                                    href={`/detail/${recommandProduct.gameData.장르}/${recommandProduct.gameData.gameId}`}
+                                >
+                                    <span className="sr-only">View</span>
+                                </Link>
+                                <img
+                                    alt={`Product ${index + 1}`}
+                                    className="object-cover w-full h-64"
+                                    height={400}
+                                    src={recommandProduct.thumbnailURL || '/placeholder.svg'}
+                                    style={{
+                                        aspectRatio: '500/400',
+                                        objectFit: 'cover',
+                                    }}
+                                    width={500}
+                                />
+                                <div className="bg-white p-4">
+                                    <h3 className="font-bold text-xl">{recommandProduct.gameData.게임명}</h3>
+                                    <p className="text-sm text-gray-500">{recommandProduct.gameData.장르}</p>
+                                    <h4 className="font-semibold text-lg md:text-xl">{`$ ${recommandProduct.gameData.price}`}</h4>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </section>
+            </div>
         </>
-    );
-}
-
-function HeartIcon(props) {
-    return (
-        <svg
-            {...props}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-        </svg>
     );
 }
