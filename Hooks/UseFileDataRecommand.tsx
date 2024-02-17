@@ -16,6 +16,8 @@ const UseFileDataRecommand = (genre: string) => {
 
                 const matchingGames = gameDocs.docs.filter((doc) => doc.data().장르 === genre);
 
+                console.log(matchingGames);
+
                 if (matchingGames.length > 0) {
                     const gameId = matchingGames[0].gameId;
 

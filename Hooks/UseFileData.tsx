@@ -4,7 +4,7 @@ import { getDoc, doc } from 'firebase/firestore';
 import { getDownloadURL, ref as storageRef } from 'firebase/storage';
 import { db, storage } from '../app/firebase';
 
-const useFileData = (fileName) => {
+const useFileData = (fileName: string) => {
     const [fileData, setFileData] = useState(null);
 
     useEffect(() => {

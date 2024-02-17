@@ -7,12 +7,19 @@ import { usePathname } from 'next/navigation';
 
 export default function DetailPage() {
     const videoQuery = usePathname();
-    const productId = decodeURIComponent(videoQuery)?.replace(/^.*\/detail\//, '');
 
-    const productInfo = useFileData(productId);
+    const productIdMatch = videoQuery.match(/\/detail\/([^\/]+)\/([^\/]+)/);
+
+    // Extracting the encoded genre and the original productId from the URL
+    const encodedGenre = productIdMatch ? decodeURIComponent(productIdMatch[1]) : null;
+    const originalProductId = productIdMatch ? productIdMatch[2] : null;
+
+    // const productId = decodeURIComponent(videoQuery)?.replace(/^.*\/detail\//, '');
+
+    const productInfo = useFileData(originalProductId);
     const gameData = productInfo?.gameData;
 
-    const recommandProduct = UseFileDataRecommand(gameData?.장르);
+    const recommandProduct = UseFileDataRecommand(encodedGenre);
 
     // 데이터 수신이 완료될때까지 대기
     if (!productInfo) {

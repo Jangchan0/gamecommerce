@@ -36,7 +36,7 @@ export default function Category({ title }) {
                             gameData.length > 0 &&
                             gameData.map((item, index) => (
                                 <div key={index} className="flex flex-col gap-2 cursor-pointer">
-                                    <Link className="font-semibold" href={`/detail/${item.gameId}`}>
+                                    <Link className="font-semibold" href={`/detail/${title}/${item.gameId}`}>
                                         <img
                                             alt="Image"
                                             className="aspect-square object-cover border border-gray-200 rounded-lg overflow-hidden dark:border-gray-800"
