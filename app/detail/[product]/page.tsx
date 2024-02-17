@@ -9,11 +9,12 @@ export default function DetailPage() {
     const productId = decodeURIComponent(videoQuery)?.replace(/^.*\/detail\//, '');
 
     const productInfo = useFileData(productId);
+
+    // 데이터 수신이 완료될때까지 대기
     if (!productInfo) {
         return <div>Loading...</div>;
     }
 
-    // Check if gameData is available
     const gameData = productInfo?.gameData;
 
     return (
