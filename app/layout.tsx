@@ -1,8 +1,10 @@
+import React from 'react';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import RecoilRootWrapper from './recoilRootWrapper';
 import QueryWrapper from './queryWrapper';
+import Nav from '../components/nav/page';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,7 +22,12 @@ export default function RootLayout({
         <html lang="en">
             <QueryWrapper>
                 <RecoilRootWrapper>
-                    <body className={inter.className}>{children}</body>
+                    <body className={inter.className}>
+                        <div className="flex">
+                            <Nav />
+                            <div className="flex-auto">{children}</div>
+                        </div>
+                    </body>
                 </RecoilRootWrapper>
             </QueryWrapper>
         </html>
