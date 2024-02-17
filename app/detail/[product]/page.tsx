@@ -1,4 +1,5 @@
 'use client';
+import useFileData from '@/Hooks/UseFileData';
 /* eslint-disable @next/next/no-img-element */
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -6,60 +7,85 @@ import { usePathname } from 'next/navigation';
 export default function DetailPage() {
     const videoQuery = usePathname();
     const productId = decodeURIComponent(videoQuery)?.replace(/^.*\/detail\//, '');
+
+    const productInfo = useFileData(productId);
+    if (!productInfo) {
+        return <div>Loading...</div>;
+    }
+
+    // Check if gameData is available
+    const gameData = productInfo?.gameData;
+
     return (
         <>
             <div className="grid md:grid-cols-2 items-start max-w-6xl px-4 mx-auto gap-6 lg:gap-12 py-6">
                 <div className="flex flex-col gap-2 items-start">
-                    <h1 className="font-bold text-3xl lg:text-4xl">
-                        DeCalComani Prism T-Shirt: The Cozy Chromatic Blend
-                    </h1>
-                    <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-0.5">
-                            <StarIcon className="w-5 h-5 fill-primary" />
-                            <StarIcon className="w-5 h-5 fill-primary" />
-                            <StarIcon className="w-5 h-5 fill-primary" />
-                            <StarIcon className="w-5 h-5 fill-muted stroke-muted-foreground" />
-                            <StarIcon className="w-5 h-5 fill-muted stroke-muted-foreground" />
-                        </div>
-                    </div>
+                    <h1 className="font-bold text-3xl lg:text-4xl">{gameData.게임명}</h1>
                     <div>
-                        <p>60% combed ringspun cotton/40% polyester jersey tee.</p>
+                        <p>{gameData.장르}</p>
                     </div>
-                    <div className="text-4xl font-bold">$99</div>
-                    <p className="text-sm text-gray-500">Remaining stock: 15</p>
+                    <img src={productInfo && productInfo.thumbnailURL} alt="썸네일" />
+
+                    <div className="text-4xl font-bold">${gameData.price}</div>
+                    <p className="text-sm text-gray-500">잔여수량: {gameData['재고수량']}</p>
                 </div>
-                <div className="grid gap-4 md:gap-10">
-                    <form className="grid gap-4 md:gap-10">
-                        <div className="grid gap-2">
-                            <label className="text-base" htmlFor="color">
-                                Color
-                            </label>
+                <div className="grid gap-4 md:gap-10 mt-12">
+                    <div>
+                        <div className="grid grid-cols-3 gap-4">
+                            <div className="flex flex-col items-center">
+                                <img
+                                    alt="Product Image 1"
+                                    className="object-cover rounded-lg"
+                                    height={100}
+                                    src="/placeholder.svg"
+                                    style={{
+                                        aspectRatio: '100/100',
+                                        objectFit: 'cover',
+                                    }}
+                                    width={100}
+                                />
+                                <p className="text-sm text-center">Product Info 1</p>
+                            </div>
+                            <div className="flex flex-col items-center">
+                                <img
+                                    alt="Product Image 2"
+                                    className="object-cover rounded-lg"
+                                    height={100}
+                                    src="/placeholder.svg"
+                                    style={{
+                                        aspectRatio: '100/100',
+                                        objectFit: 'cover',
+                                    }}
+                                    width={100}
+                                />
+                                <p className="text-sm text-center">Product Info 2</p>
+                            </div>
+                            <div className="flex flex-col items-center">
+                                <img
+                                    alt="Product Image 3"
+                                    className="object-cover rounded-lg"
+                                    height={100}
+                                    src="/placeholder.svg"
+                                    style={{
+                                        aspectRatio: '100/100',
+                                        objectFit: 'cover',
+                                    }}
+                                    width={100}
+                                />
+                                <p className="text-sm text-center">Product Info 3</p>
+                            </div>
                         </div>
-                        <div className="grid gap-2">
-                            <label className="text-base" htmlFor="quantity">
-                                Quantity
-                            </label>
-                        </div>
-                        <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                            <button>Add to cart</button>
-                            <button>
-                                <HeartIcon className="w-4 h-4 mr-2" />
-                                Add to wishlist
-                            </button>
-                        </div>
-                    </form>
-                    <div className="grid gap-4 text-sm leading-loose">
-                        <p>
-                            Introducing the DeCalComani Prism T-Shirt, a perfect blend of style and comfort for the
-                            modern individual. This tee is crafted with a meticulous composition of 60% combed ringspun
-                            cotton and 40% polyester jersey, ensuring a soft and breathable fabric that feels gentle
-                            against the skin.
-                        </p>
-                        <p>
-                            The design of the DeCalComani Prism T-Shirt is as striking as it is comfortable. The shirt
-                            features a unique prism-inspired pattern that adds a modern and eye-catching touch to your
-                            ensemble.
-                        </p>
+                    </div>
+                    <div className="px-2 py-1 gap-4 text-sm leading-loose bg-slate-200 rounded-md h-[200px]">
+                        <h3 className="text-2xl font-bold mb-2">게임 소개</h3>
+                        <p>{gameData.게임소개}</p>
+                    </div>
+                    <div className="flex justify-between gap-2 min-[400px]:flex-row">
+                        <button>Add to cart</button>
+                        <button className="flex">
+                            <HeartIcon className="w-4 h-4 mr-2" />
+                            Add to wishlist
+                        </button>
                     </div>
                 </div>
             </div>
