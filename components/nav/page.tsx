@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import CartNumber from './cartNumber';
+import CartNumber from './CartNumber';
 
 const Nav = () => {
     const officialGame = [
@@ -34,8 +34,7 @@ const Nav = () => {
                 </div>
 
                 <div className="navUserInfo flex flex-col mt-4 ">
-                    <div className="flex">
-                        <p>장바구니 </p>
+                    <div>
                         <CartNumber />
                     </div>
                     <div className="flex justify-between mb-6">

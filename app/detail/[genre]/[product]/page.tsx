@@ -41,6 +41,8 @@ export default function DetailPage() {
     const addToCart = (product) => {
         setCart([...cart, product]);
         alert('장바구니에 추가했습니다.');
+
+        localStorage.setItem('cartState', JSON.stringify([...cart, product]));
     };
 
     return (
@@ -133,7 +135,7 @@ export default function DetailPage() {
                                 className="relative group overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-transform duration-300 ease-in-out hover:-translate-y-2"
                             >
                                 <Link
-                                    className="absolute inset-0 z-10"
+                                    className=" inset-0"
                                     href={`/detail/${recommandProduct.gameData.장르}/${recommandProduct.gameData.gameId}`}
                                 >
                                     <span className="sr-only">View</span>

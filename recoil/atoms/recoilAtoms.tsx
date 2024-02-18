@@ -1,12 +1,19 @@
+'use client';
+// atoms/recoilAtoms.js
+
 import { atom, selector } from 'recoil';
 
-// Recoil에서 사용할 상태(atom) 정의
+// Local Storage에 저장된 값을 초기 상태로 사용
+const getInitialCartState = () => {
+    const storedCart = localStorage.getItem('cartState');
+    return storedCart ? JSON.parse(storedCart) : [];
+};
+
 export const cartState = atom({
     key: 'cartState',
-    default: [],
+    default: getInitialCartState(), // 로컬 스토리지 값으로 초기화
 });
 
-// 장바구니에 들어있는 상품 갯수를 계산하는 selector 정의
 export const cartItemCountState = selector({
     key: 'cartItemCountState',
     get: ({ get }) => {
