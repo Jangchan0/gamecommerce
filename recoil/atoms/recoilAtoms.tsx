@@ -11,6 +11,6 @@ export const cartItemCountState = selector({
     key: 'cartItemCountState',
     get: ({ get }) => {
         const cart = get(cartState);
-        return cart.length;
+        return cart;
     },
 });

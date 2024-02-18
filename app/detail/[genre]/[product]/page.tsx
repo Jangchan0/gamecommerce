@@ -4,23 +4,25 @@ import UseFileDataRecommand from '@/Hooks/UseFileDataRecommand';
 /* eslint-disable @next/next/no-img-element */
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import React from 'react';
 import { useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { cartItemCountState, cartState } from '../../../../recoil/atoms/recoilAtoms';
 
 export default function DetailPage() {
     const videoQuery = usePathname();
+    const [cart, setCart] = useRecoilState(cartState);
+
+    const cartItemCount = useRecoilState(cartItemCountState);
 
     const productIdMatch = videoQuery.match(/\/detail\/([^\/]+)\/([^\/]+)/);
 
-    // Extracting the encoded genre and the original productId from the URL
     const encodedGenre = productIdMatch ? decodeURIComponent(productIdMatch[1]) : null;
     const originalProductId = productIdMatch ? decodeURIComponent(productIdMatch[2]) : null;
-
-    // const productId = decodeURIComponent(videoQuery)?.replace(/^.*\/detail\//, '');
 
     const productInfo = useFileData(originalProductId);
     const gameData = productInfo?.gameData;
 
-    // Use useEffect to fetch recommandProducts when the component mounts
     const [recommandProducts, setRecommandProducts] = useState(null);
 
     useEffect(() => {
@@ -32,10 +34,14 @@ export default function DetailPage() {
         fetchRecommandProducts();
     }, [encodedGenre]);
 
-    // Wait for both productInfo and recommandProducts to be available
     if (!productInfo || recommandProducts === null) {
         return <div>Loading...</div>;
     }
+
+    const addToCart = (product) => {
+        setCart([...cart, product]);
+        alert('장바구니에 추가했습니다.');
+    };
 
     return (
         <>
@@ -102,7 +108,17 @@ export default function DetailPage() {
                         <p>{gameData.게임소개}</p>
                     </div>
                     <div className="flex justify-between gap-2 min-[400px]:flex-row">
-                        <button>Add to cart</button>
+                        <button
+                            onClick={() =>
+                                addToCart({
+                                    name: gameData.게임명,
+                                    price: gameData.price,
+                                    thumbnail: productInfo.thumbnailURL,
+                                })
+                            }
+                        >
+                            Add to cart
+                        </button>
                         <button className="flex">❤️ Add to wishlist</button>
                     </div>
                 </div>
@@ -111,7 +127,6 @@ export default function DetailPage() {
                 <h2 className="text-4xl font-bold p-4 mt-12">관련상품</h2>
                 <section className="recommandProduct grid grid-cols-1 md:grid-cols-4 gap-6 p-4 md:p-6">
                     {recommandProducts.map((recommandProduct, index) => {
-                        console.log(recommandProduct);
                         return (
                             <div
                                 key={index}

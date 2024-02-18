@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import CartNumber from './cartNumber';
 
 const Nav = () => {
     const officialGame = [
@@ -32,7 +33,11 @@ const Nav = () => {
                     </div>
                 </div>
 
-                <div className="navUserInfo flex flex-col mt-4">
+                <div className="navUserInfo flex flex-col mt-4 ">
+                    <div className="flex">
+                        <p>장바구니 </p>
+                        <CartNumber />
+                    </div>
                     <div className="flex justify-between mb-6">
                         <p>유저 아이디</p>
                         <p>setting</p>
