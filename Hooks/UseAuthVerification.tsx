@@ -1,4 +1,5 @@
-// useAuthVerification.js
+'use client';
+
 import { useEffect } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
