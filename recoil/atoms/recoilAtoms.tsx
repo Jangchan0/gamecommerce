@@ -1,21 +1,16 @@
 import { atom, selector } from 'recoil';
 
-// 회원가입 정보를 저장하는 atom
-export const videoInfoState = atom({
-    key: 'videoInfo',
-    default: {
-        영상명: '',
-        장르: '',
-        가격: '',
-        판매여부: null,
-        price: 0,
-    },
+// Recoil에서 사용할 상태(atom) 정의
+export const cartState = atom({
+    key: 'cartState',
+    default: [],
 });
 
-// 회원가입 정보를 가져오는 selector
-export const signUpInfoSelector = selector({
-    key: 'videoInfoSelector',
+// 장바구니에 들어있는 상품 갯수를 계산하는 selector 정의
+export const cartItemCountState = selector({
+    key: 'cartItemCountState',
     get: ({ get }) => {
-        return get(videoInfoState);
+        const cart = get(cartState);
+        return cart.length;
     },
 });
