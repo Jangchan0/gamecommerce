@@ -1,64 +1,118 @@
 'use client';
-// 회원가입 /SignUp
+import { useRecoilState } from 'recoil';
+import { signUpState } from '@/recoil/atoms/recoilAtoms';
+import React from 'react';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from '@/app/firebase';
+import { setDoc, doc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { signUpInfoState, signUpInfoSelector } from '@/recoil/atoms/recoilAtoms';
 
-const SignUp = () => {
+const SignUpForm = () => {
     const router = useRouter();
-    const [signUpInfo, setSignUpInfo] = useRecoilState(signUpInfoState);
-    const signUpInfoFromSelector = useRecoilValue(signUpInfoSelector);
+    const [signUpInfo, setSignUpInfo] = useRecoilState(signUpState);
+    const [passwordMatchError, setPasswordMatchError] = React.useState(false);
 
-    const handleChange = (position: number) => {
+    const onEmailHandler = (e) => {
         setSignUpInfo((prevInfo) => ({
             ...prevInfo,
-            position: position,
+            email: e.target.value,
         }));
     };
 
-    console.log(signUpInfoFromSelector.position);
+    const onNameHandler = (e) => {
+        setSignUpInfo((prevInfo) => ({
+            ...prevInfo,
+            username: e.target.value,
+        }));
+    };
 
-    // position 1 => 게임유저
-    // position 2 => 개발자
+    const onPasswordHandler = (e) => {
+        setSignUpInfo((prevInfo) => ({
+            ...prevInfo,
+            password: e.target.value,
+        }));
+    };
 
-    const goToDetailInfo = () => {
-        if (signUpInfoFromSelector.position !== 0) {
-            router.push('signUp/Input');
+    const onConfirmPasswordHandler = (e) => {
+        setSignUpInfo((prevInfo) => ({
+            ...prevInfo,
+            confirmPassword: e.target.value,
+        }));
+    };
+
+    // 비밀번호 확인
+    React.useEffect(() => {
+        if (signUpInfo.password !== signUpInfo.confirmPassword && signUpInfo.confirmPassword.length > 0) {
+            setPasswordMatchError(true);
+        } else if (signUpInfo.password === signUpInfo.confirmPassword) {
+            setPasswordMatchError(false);
+        }
+    }, [signUpInfo.confirmPassword, signUpInfo.password]);
+
+    const onSignUpHandler = async (e) => {
+        e.preventDefault();
+        if (
+            signUpInfo.email &&
+            signUpInfo.username &&
+            signUpInfo.password &&
+            signUpInfo.confirmPassword &&
+            !passwordMatchError
+        ) {
+            try {
+                const userDocRef = doc(db, 'users', signUpInfo.email);
+
+                await setDoc(userDocRef, {
+                    email: signUpInfo.email,
+                    username: signUpInfo.username,
+                    position: signUpInfo.position,
+                });
+                const userCredential = await createUserWithEmailAndPassword(
+                    auth,
+                    signUpInfo.email,
+                    signUpInfo.password
+                );
+
+                alert('회원가입 성공!');
+                router.push('/auth/login');
+            } catch (error) {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+
+                switch (errorCode) {
+                    case 'auth/email-already-in-use':
+                        alert('이미 사용 중인 이메일 주소입니다.');
+                        break;
+
+                    default:
+                        alert('회원가입 실패. 다시 시도해주세요.');
+                }
+            }
         } else {
-            alert('포지션을 선택해주세요.');
+            if (passwordMatchError) {
+                alert('비밀번호가 일치하지 않습니다');
+            } else {
+                alert('모든 정보를 입력해주세요');
+            }
         }
     };
 
     return (
-        <>
-            <div className="w-full h-[100vh] flex flex-col justify-center items-center ">
-                <div className="flex">
-                    <label
-                        className="w-[20vw] h-[50vh] min-w-[100px] min-h-[300px] bg-rose-300 mr-8 flex flex-col pt-5 items-center rounded-xl cursor-pointer hover:scale-105 transition-transform"
-                        onClick={() => {
-                            handleChange(1);
-                        }}
-                    >
-                        <div className="w-[200px] h-[200px] rounded-full bg-fuchsia-100 mb-8" />
-                        일반유저입니까
-                    </label>
-                    <label
-                        className="w-[20vw] h-[50vh] min-w-[100px] min-h-[300px] bg-rose-300 mr-8 flex flex-col pt-5 items-center  rounded-xl cursor-pointer hover:scale-105 transition-transform"
-                        onClick={() => {
-                            handleChange(2);
-                        }}
-                    >
-                        <div className="w-[200px] h-[200px] rounded-full bg-fuchsia-100 mb-8" />
-                        개발자입니까
-                    </label>
-                </div>
+        <form className="flex flex-col">
+            <label>Email</label>
+            <input type="email" value={signUpInfo.email} onChange={onEmailHandler} />
+            <label>Name</label>
+            <input type="text" value={signUpInfo.username} onChange={onNameHandler} />
+            <label>Password</label>
+            <input type="password" value={signUpInfo.password} onChange={onPasswordHandler} />
+            <label>Confirm Password</label>
+            <input type="password" value={signUpInfo.confirmPassword} onChange={onConfirmPasswordHandler} />
 
-                <button className="w-[300px] h-[50px] rounded-sm bg-slate-400 mt-12" onClick={goToDetailInfo}>
-                    선택완료
-                </button>
-            </div>
-        </>
+            {passwordMatchError ? <p style={{ color: 'red' }}>비밀번호가 일치하지 않습니다.</p> : ''}
+
+            <br />
+            <button onClick={onSignUpHandler}>회원가입</button>
+        </form>
     );
 };
 
-export default SignUp;
+export default SignUpForm;
