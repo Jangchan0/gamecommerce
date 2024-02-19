@@ -8,16 +8,18 @@ const CartNumber = () => {
     const cartItemCount = useRecoilState(cartItemCountState);
     const [isDropOn, setIsDropOn] = useRecoilState(isDropCart);
     return (
-        <div
-            onClick={() => {
-                setIsDropOn(!isDropOn);
-            }}
-            className="flex"
-        >
-            <p>장바구니 </p>
-            <p>{cartItemCount[0].length}</p>
+        <>
+            <div
+                onClick={() => {
+                    setIsDropOn(!isDropOn);
+                }}
+                className="flex"
+            >
+                <p>장바구니 </p>
+                <p>{cartItemCount[0].length}</p>
+            </div>
             {isDropOn && <CartDrop />}
-        </div>
+        </>
     );
 };
 
