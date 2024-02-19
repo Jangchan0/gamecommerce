@@ -67,7 +67,7 @@ const Registration = () => {
         setVideoFile(e.target.files[0]);
     };
 
-    const initialVideoInfo = {
+    const initialGameInfo = {
         게임명: '',
         장르: '',
         게임소개: '',
@@ -75,10 +75,10 @@ const Registration = () => {
         재고수량: 0,
     };
 
-    const [gameInfo, setVideoInfo] = useState(initialVideoInfo);
+    const [gameInfo, setGameInfo] = useState(initialGameInfo);
 
     const handleInputChange = (key: string, value: string | number | boolean) => {
-        setVideoInfo((prevVideoInfo) => ({
+        setGameInfo((prevVideoInfo) => ({
             ...prevVideoInfo,
             [key]: value,
         }));
@@ -95,8 +95,8 @@ const Registration = () => {
         }
 
         // Check if both video file and thumbnail are selected
-        if (!videoFile || !thumbnails) {
-            alert('영상 파일과 썸네일을 선택해주세요');
+        if (!thumbnails) {
+            alert('썸네일을 선택해주세요');
             return;
         }
 
@@ -216,7 +216,7 @@ const Registration = () => {
                                     ) : (
                                         // Default text input
                                         <input
-                                            value={value}
+                                            value={value as number}
                                             onChange={(e) => handleInputChange(key, e.target.value)}
                                             className="w-[300px] rounded-sm outline-none px-1"
                                             placeholder={key === 'price' ? '가격작성' : '재고수량'}
