@@ -11,6 +11,7 @@ const CartDrawer = () => {
         const updatedCart = [...cart];
         updatedCart.splice(index, 1);
         setCart(updatedCart);
+        localStorage.setItem('cartState', JSON.stringify(updatedCart));
     };
 
     return (
@@ -29,7 +30,7 @@ const CartDrawer = () => {
                         </div>
                         <div className="ml-auto flex flex-col items-center gap-2">
                             <button>Edit</button>
-                            <button onClick={handleDelete}>Delete</button>
+                            <button onClick={() => handleDelete(index)}>Delete</button>
                         </div>
                     </div>
                 ))}

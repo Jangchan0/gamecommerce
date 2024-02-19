@@ -134,8 +134,11 @@ export default function DetailPage() {
                                     ? addToCart({
                                           name: gameData.게임명,
                                           price: gameData.price,
+                                          genre: gameData.장르,
+                                          gameId: gameData.gameId,
                                           quantity: quantity,
                                           thumbnail: productInfo.thumbnailURL,
+                                          gameDetailPage: `/detail/${gameData.장르}/${gameData.gameId}`,
                                       })
                                     : DropCart()
                             }

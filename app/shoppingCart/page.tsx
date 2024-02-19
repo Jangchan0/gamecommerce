@@ -1,11 +1,20 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import UseAuthVerification from '../../Hooks/UseAuthVerification';
 import CartItem from '../../components/shoppingCart/CartItem';
 
 export default function ShoppingCart() {
     UseAuthVerification();
+    const [shoppingCartItem, setShoppingCartItem] = useState([]);
+
+    useEffect(() => {
+        const storedCart = localStorage.getItem('cartState');
+        if (storedCart) {
+            setShoppingCartItem(JSON.parse(storedCart));
+        }
+    }, []);
+
     return (
         <div className="max-w-5xl mx-auto mt-8">
             <h1 className="text-3xl font-bold mb-4">장바구니</h1>
@@ -21,7 +30,9 @@ export default function ShoppingCart() {
                         <th></th>
                     </tr>
                 </thead>
-                <CartItem />
+                {shoppingCartItem.map((item, index) => (
+                    <CartItem key={index} item={item} />
+                ))}
             </table>
             <div className="flex justify-between items-center mt-4">
                 <div>
@@ -29,8 +40,13 @@ export default function ShoppingCart() {
                     <button className="border ml-2">선택 재주문</button>
                 </div>
                 <div className="text-right">
-                    <div className="text-lg font-medium">총 5개 상품금액</div>
-                    <div className="text-2xl font-bold mt-2">1,000,000원</div>
+                    <div className="text-lg font-medium">총 {shoppingCartItem.length}개 상품금액</div>
+                    <div className="text-2xl font-bold mt-2">
+                        {shoppingCartItem
+                            .reduce((total, item) => total + item.price * item.quantity, 0)
+                            .toLocaleString()}
+                        원
+                    </div>
                 </div>
             </div>
             <div className="flex justify-end mt-4">
