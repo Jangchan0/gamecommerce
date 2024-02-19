@@ -30,6 +30,7 @@ export default function ShoppingCart() {
     }, []);
 
     const totalPrice = shoppingCartItem.reduce((total, item) => total + item.price * item.quantity, 0);
+
     function onClickPayment() {
         if (!window.IMP) return;
 
@@ -37,11 +38,11 @@ export default function ShoppingCart() {
         IMP.init('imp36774883');
 
         const data = {
-            pg: 'kakao',
-            pay_method: 'card',
+            pg: 'kakao', // pg사
+            pay_method: 'kakaopay', // 결제 수단
             merchant_uid: `mid_${new Date().getTime()}`,
             amount: totalPrice,
-            name: '아임포트 결제 데이터 분석',
+            name: '아임포트 결제 데이터 시험',
             buyer_name: '홍길동',
             buyer_tel: '01012341234',
             buyer_email: 'example@example.com',
