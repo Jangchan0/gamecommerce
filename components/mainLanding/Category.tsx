@@ -5,6 +5,7 @@ import UseGetCategory from '@/Hooks/UseGetCategory';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import CategoryBox from './CategoryBox';
+import React from 'react';
 
 export default function Category({ title }) {
     const [categoryData, setCategoryData] = useState({});

@@ -25,10 +25,6 @@ const ListProductBox = (props) => {
                     <p className="mt-2 text-sm font-semibold">{item.price}</p>
                 </div>
             </div>
-            <div className="flex justify-between">
-                <button>Details</button>
-                <button>Add to Cart</button>
-            </div>
         </div>
     );
 };

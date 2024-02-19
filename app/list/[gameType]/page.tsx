@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import UseGetCategory from '../../../Hooks/UseGetCategory';
 import ListProductBox from '../../../components/list/ListProductBox';
+import Link from 'next/link';
 
 export default function GameList() {
     const [queryCategoryData, setQueryCategoryData] = useState(null);
@@ -32,7 +33,11 @@ export default function GameList() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
                 {queryCategoryData && queryCategoryData[domainCate] ? (
                     queryCategoryData[domainCate].map((item, index) => {
-                        return <ListProductBox key={index} item={item} />;
+                        return (
+                            <Link key={index} href={`/detail/${item.장르}/${item.gameId}`}>
+                                <ListProductBox item={item} />
+                            </Link>
+                        );
                     })
                 ) : (
                     <div>검색결과가 없습니다.</div>
