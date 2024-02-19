@@ -58,14 +58,20 @@ export default function ShoppingCart() {
                     const db = getFirestore();
 
                     for (const item of shoppingCartItem) {
-                        const productDocRef = doc(db, 'products', item.productId);
+                        console.log(item);
+                        const productDocRef = doc(db, 'Game', item.gameId);
                         const productDoc = await getDoc(productDocRef);
 
                         if (productDoc.exists()) {
-                            const currentStock = productDoc.data().stock;
-                            const newStock = currentStock - item.quantity;
+                            console.log('exists');
+                            const currentStock = productDoc.data().재고수량;
+                            const newStock = Number(currentStock) - item.quantity;
+                            if (newStock < 0) {
+                                alert('재고가 부족하여 결제에 실패했습니다.');
+                                return;
+                            }
 
-                            await updateDoc(productDocRef, { stock: newStock });
+                            await updateDoc(productDocRef, { 재고수량: newStock });
                         }
                     }
 
@@ -79,36 +85,6 @@ export default function ShoppingCart() {
             }
         });
     }
-
-    // const onClickPayment = () => {
-    //     var IMP = window.IMP;
-    //     IMP.init('imp36774883'); // Example: imp00000000
-
-    //     if (typeof window !== 'undefined' && typeof window.IMP !== 'undefined') {
-    //         IMP.request_pay({ data }, (rsp: any) => {
-    //             // callback
-    //             if (rsp.success) {
-    //                 // 결제 성공 시: 결제 승인 또는 가상계좌 발급에 성공한 경우
-    //                 axios({
-    //                     url: 'https://www.myservice.com/payments/complete', // 예: https://www.myservice.com/payments/complete
-    //                     method: 'post',
-    //                     headers: { 'Content-Type': 'application/json' },
-    //                     data: {
-    //                         imp_uid: rsp.imp_uid,
-    //                         merchant_uid: rsp.merchant_uid,
-    //                     },
-    //                 }).then((data) => {
-    //                     console.log(data);
-    //                     alert('결제 성공!');
-    //                 });
-    //             } else {
-    //                 alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
-    //             }
-    //         });
-    //     } else {
-    //         console.log('imp가 없습니다');
-    //     }
-    // };
 
     return (
         <div className="max-w-5xl mx-auto mt-8">
