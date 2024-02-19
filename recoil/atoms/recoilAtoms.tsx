@@ -21,3 +21,16 @@ export const cartItemCountState = selector({
         return cart;
     },
 });
+
+export const isDropCart = atom({
+    key: 'isDropCart',
+    default: false,
+});
+
+export const isDropCartState = selector({
+    key: 'isDropCartState',
+    get: ({ get }) => {
+        const drop = get(isDropCart);
+        return !drop;
+    },
+});

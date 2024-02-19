@@ -216,7 +216,7 @@ const Registration = () => {
                                     ) : (
                                         // Default text input
                                         <input
-                                            value={value.toLocaleString('ko-KR') as Number}
+                                            value={value}
                                             onChange={(e) => handleInputChange(key, e.target.value)}
                                             className="w-[300px] rounded-sm outline-none px-1"
                                             placeholder={key === 'price' ? '가격작성' : '재고수량'}

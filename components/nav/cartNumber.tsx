@@ -1,12 +1,12 @@
 'use client';
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { cartItemCountState } from '../../recoil/atoms/recoilAtoms';
+import { cartItemCountState, isDropCart } from '../../recoil/atoms/recoilAtoms';
 import CartDrop from './CartDrop';
 
 const CartNumber = () => {
     const cartItemCount = useRecoilState(cartItemCountState);
-    const [isDropOn, setIsDropOn] = useState(false);
+    const [isDropOn, setIsDropOn] = useRecoilState(isDropCart);
     return (
         <div
             onClick={() => {

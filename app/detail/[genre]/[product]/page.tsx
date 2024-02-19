@@ -7,13 +7,13 @@ import { usePathname } from 'next/navigation';
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { cartItemCountState, cartState } from '../../../../recoil/atoms/recoilAtoms';
+import { cartState, isDropCart } from '../../../../recoil/atoms/recoilAtoms';
 
 export default function DetailPage() {
     const videoQuery = usePathname();
     const [cart, setCart] = useRecoilState(cartState);
-
-    const cartItemCount = useRecoilState(cartItemCountState);
+    const [quantity, setQuantity] = useState<number>(0);
+    const [isDropOn, setIsDropOn] = useRecoilState(isDropCart);
 
     const productIdMatch = videoQuery.match(/\/detail\/([^\/]+)\/([^\/]+)/);
 
@@ -43,6 +43,14 @@ export default function DetailPage() {
         alert('장바구니에 추가했습니다.');
 
         localStorage.setItem('cartState', JSON.stringify([...cart, product]));
+    };
+
+    const storedCart = localStorage.getItem('cartState');
+    const parsedCart = storedCart ? JSON.parse(storedCart) : [];
+    const isInCart = parsedCart.find((item) => item.name === gameData.게임명);
+
+    const DropCart = () => {
+        setIsDropOn(!isDropOn);
     };
 
     return (
@@ -110,16 +118,29 @@ export default function DetailPage() {
                         <p>{gameData.게임소개}</p>
                     </div>
                     <div className="flex justify-between gap-2 min-[400px]:flex-row">
+                        <div className="">
+                            수량
+                            <input
+                                type="number"
+                                value={quantity}
+                                onChange={(e) => setQuantity(Number(e.target.value))}
+                                className="w-[50px] ml-5"
+                            />
+                        </div>
+
                         <button
                             onClick={() =>
-                                addToCart({
-                                    name: gameData.게임명,
-                                    price: gameData.price,
-                                    thumbnail: productInfo.thumbnailURL,
-                                })
+                                !isInCart
+                                    ? addToCart({
+                                          name: gameData.게임명,
+                                          price: gameData.price,
+                                          quantity: quantity,
+                                          thumbnail: productInfo.thumbnailURL,
+                                      })
+                                    : DropCart()
                             }
                         >
-                            Add to cart
+                            {isInCart ? '장바구니 보기' : 'Add to cart'}
                         </button>
                         <button className="flex">❤️ Add to wishlist</button>
                     </div>
