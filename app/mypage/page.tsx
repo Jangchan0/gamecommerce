@@ -7,7 +7,6 @@ import UseAuthVerification from '@/Hooks/UseAuthVerification';
 import OrderList from './orderList';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import UseGetUserUid from '@/Hooks/UseGetUserUid';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 const MyPage = () => {
     UseAuthVerification();

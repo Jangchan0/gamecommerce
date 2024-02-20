@@ -1,7 +1,6 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from 'react';
-import { getFirestore, updateDoc, doc, getDoc } from 'firebase/firestore';
 import UseAuthVerification from '../../Hooks/UseAuthVerification';
 import CartItem from '../../components/shoppingCart/CartItem';
 import UseGetUserInfo from '@/Hooks/UseGetUserInfo';

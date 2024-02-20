@@ -17,6 +17,7 @@ const OrderList = (props) => {
         minute: '2-digit',
         second: '2-digit',
     };
+
     const formattedOrderDate = new Intl.DateTimeFormat('ko-KR', options).format(orderDate);
 
     const handleCancelProduct = async (productId) => {

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { signUpState } from '@/recoil/atoms/recoilAtoms';
 import { useRouter } from 'next/navigation';
@@ -8,44 +8,48 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '@/app/firebase';
 import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 
+const formFields = [
+    { id: 'email', label: '이메일', placeholder: 'm@example.com', type: 'text', required: true },
+    { id: 'username', label: '유저 닉네임', placeholder: 'myname99', type: 'text', required: true },
+    { id: 'address', label: '주소', placeholder: '서울특별시 강남구', type: 'text', required: true },
+    { id: 'password', label: '비밀번호', placeholder: '', type: 'password', required: true },
+    { id: 'confirmPassword', label: '비밀번호 확인', placeholder: '', type: 'password', required: true },
+];
+
 export default function SignUpComponent() {
     const [signUpInfo, setSignUpInfo] = useRecoilState(signUpState);
-    const [passwordMatchError, setPasswordMatchError] = React.useState(false);
-    const [isUsernameDuplicate, setIsUsernameDuplicate] = React.useState(false);
+    const [passwordMatchError, setPasswordMatchError] = useState(false);
+    const [isUsernameDuplicate, setIsUsernameDuplicate] = useState(false);
     const router = useRouter();
 
-    const formFields = [
-        { id: 'email', label: '이메일', placeholder: 'm@example.com', type: 'text', required: true },
-        { id: 'username', label: '유저 닉네임', placeholder: 'myname99', type: 'text', required: true },
-        { id: 'address', label: '주소', placeholder: '서울특별시 강남구', type: 'text', required: true },
-        { id: 'password', label: '비밀번호', placeholder: '', type: 'password', required: true },
-        { id: 'confirmPassword', label: '비밀번호 확인', placeholder: '', type: 'password', required: true },
-    ];
+    const isSamePassword = signUpInfo.password !== signUpInfo.confirmPassword && signUpInfo.confirmPassword.length > 0;
 
-    React.useEffect(() => {
-        if (signUpInfo.password !== signUpInfo.confirmPassword && signUpInfo.confirmPassword.length > 0) {
+    useEffect(() => {
+        if (isSamePassword) {
             setPasswordMatchError(true);
-        } else if (signUpInfo.password === signUpInfo.confirmPassword) {
+        }
+        if (signUpInfo.password === signUpInfo.confirmPassword) {
             setPasswordMatchError(false);
         }
-    }, [signUpInfo.confirmPassword, signUpInfo.password]);
+    }, [isSamePassword, signUpInfo.confirmPassword, signUpInfo.password]);
 
     const checkUsernameDuplicate = async (e) => {
         const usernameExists = await checkIfUsernameExists(e);
         setIsUsernameDuplicate(usernameExists);
     };
 
-    const onSignUpHandler = async (e) => {
+    const onSignUpHandler = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
-        if (
+        const isValued =
             signUpInfo.email &&
             signUpInfo.username &&
             signUpInfo.password &&
             signUpInfo.confirmPassword &&
             signUpInfo.address &&
             !passwordMatchError &&
-            !isUsernameDuplicate
-        ) {
+            !isUsernameDuplicate;
+
+        if (isValued) {
             try {
                 const userDocRef = doc(db, 'users', signUpInfo.email);
 
