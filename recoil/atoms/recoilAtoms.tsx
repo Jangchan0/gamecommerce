@@ -5,19 +5,18 @@ import { atom, selector } from 'recoil';
 
 export const signUpState = atom({
     key: 'signUpState',
-    default: [{ email: '', username: '', password: '', confirmPassword: '' }],
+    default: { email: '', username: '', password: '', confirmPassword: '', address: '' },
 });
 
 export const signUpInfoSelector = selector({
     key: 'signUpInfoSelector',
     get: ({ get }) => {
         const signUpInfo = get(signUpState);
-        // 추가적인 로직 적용 가능
+
         return signUpInfo;
     },
 });
 
-// Local Storage에 저장된 값을 초기 상태로 사용
 const getInitialCartState = () => {
     const storedCart = localStorage.getItem('cartState');
     return storedCart ? JSON.parse(storedCart) : [];
