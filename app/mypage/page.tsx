@@ -51,7 +51,7 @@ const MyPage = () => {
                         <MyVideoList />
                     </div>
                     <div className=" w-[35vw] ml-[20px]">
-                        <div className=" h-[60%] bg-slate-300 ">
+                        <div className=" h-[60%] bg-slate-300 overflow-y-scroll">
                             주문목록
                             {orderList &&
                                 orderList.length > 0 &&

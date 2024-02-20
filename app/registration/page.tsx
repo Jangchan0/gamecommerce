@@ -7,41 +7,62 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import ComponentTitle from '@/components/ComponentTitle';
 import UseAuthVerification from 'Hooks/UseAuthVerification';
 import Image from 'next/image';
-import { collection, doc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, query, serverTimestamp, setDoc, where } from 'firebase/firestore';
 import uploadImg from '@/public/uploadImg.png';
+import UseGetUserInfo from '@/Hooks/UseGetUserInfo';
+import UseGetUserUid from '@/Hooks/UseGetUserUid';
 
 const Registration = () => {
     const router = useRouter();
     UseAuthVerification();
 
-    const [user, setUser] = useState(null);
+    const uid = UseGetUserUid();
+
+    const [userEmail, setUserEmail] = useState();
+    const [username, setUsername] = useState();
+
+    const handleSetUserInfo = (user) => {
+        setUserEmail(user.email);
+    };
+
+    UseGetUserInfo(handleSetUserInfo);
 
     useEffect(() => {
-        const auth = getAuth();
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setUser(user);
-        });
+        if (userEmail) {
+            getUserByUsername(userEmail);
+        }
+    }, [userEmail]);
 
-        return () => unsubscribe();
-    }, []);
+    async function getUserByUsername(userEmail: string) {
+        const userCollectionRef = collection(db, 'users');
 
-    const uid = user?.uid;
+        const q = query(userCollectionRef, where('email', '==', userEmail));
+
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            const userDoc = querySnapshot.docs[0];
+
+            setUsername(userDoc.data().username);
+        } else {
+            console.log('No user found with the specified email.');
+        }
+    }
 
     const addVideo = async (gameInfo, thumbnailPaths, videoFileURL, uid) => {
         const gameId = `${uid}_${gameInfo.게임명}`;
-        const videoCollectionRef = doc(collection(db, 'Game'), gameId);
+        const gameCollectionRef = doc(collection(db, 'Game'), gameId);
 
         try {
-            await setDoc(videoCollectionRef, {
+            await setDoc(gameCollectionRef, {
                 ...gameInfo,
                 thumbnail: thumbnailPaths[0], // 첫 번째 썸네일을 메인 썸네일로 설정
                 videoFile: videoFileURL, // 게임 파일 URL 저장
                 timestamp: serverTimestamp(),
                 gameId: gameId,
-                uploadUser: uid,
+                uploadUser: username,
                 downloadTime: 0,
             });
-            return uid;
         } catch (error) {
             console.error('Error adding video document:', error);
             return null; // Return null or any other value to indicate failure

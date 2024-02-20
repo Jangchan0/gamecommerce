@@ -9,6 +9,7 @@ declare const window: typeof globalThis & {
 
 const BuyerInfo = (props) => {
     const { shoppingCartItem, handleCartModal } = props;
+    console.log(shoppingCartItem);
 
     const totalPrice = shoppingCartItem.reduce((total, item) => total + item.price * item.quantity, 0);
     const [buyerInfo, setBuyerInfo] = useState({
