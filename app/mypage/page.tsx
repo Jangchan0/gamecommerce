@@ -1,58 +1,64 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
-import { app } from '../firebase';
-import { UseGetStore } from '@/Hooks/UseGetStore';
+import { db } from '../firebase';
 import MyVideoList from './myVideoList';
+import UseAuthVerification from '@/Hooks/UseAuthVerification';
+import OrderList from './orderList';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import UseGetUserUid from '@/Hooks/UseGetUserUid';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 const MyPage = () => {
+    UseAuthVerification();
     const router = useRouter();
-    const [userPosition, setUserPosition] = useState<Number | null>(null);
-    useEffect(() => {
-        const auth = getAuth(app);
+    const [orderList, setOrderList] = useState(null);
 
-        // fetchData -> useGet을 통해 user정보 수신 및 포지션 파악
-        const fetchData = async (userEmail: string) => {
+    const uid = UseGetUserUid();
+
+    useEffect(() => {
+        const fetchData = async () => {
             try {
-                const userData = await UseGetStore('users', userEmail);
-                if (userData) {
-                    setUserPosition(userData.position);
-                }
+                const orderCollectionRef = collection(db, 'Order');
+                const q = query(orderCollectionRef, where('uid', '==', uid));
+                const querySnapshot = await getDocs(q);
+
+                const orders = [];
+                querySnapshot.forEach((doc) => {
+                    orders.push(doc.data());
+                });
+
+                setOrderList(orders);
             } catch (error) {
-                console.error('Error fetching user data:', error);
+                console.error('Error fetching data:', error);
             }
         };
 
-        // 로그인 여부 확인 및 커스텀 훅에 유저의 이메일을 인자로 전달
-        const loginVerification = onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                alert('로그인이 필요합니다');
-                router.push('/auth/login');
-            } else {
-                fetchData(user.email as string);
-            }
-        });
-
-        return () => loginVerification();
-    }, [router]);
-
-    // 개발자라면 판매게임 목록 / 찜목록 전환가능
-    // 게이머라면 찜목록
+        fetchData();
+    }, [uid]);
 
     return (
         <>
             <div className="flex flex-col mx-auto my-auto ">
                 <div className=" flex justify-between w-full mb-5 items-baseline">
                     <h2 className="componentTitle ">My Page</h2>
-                    <div>영상등록+</div>
+                    <div onClick={() => router.push('/registration')} className="cursor-pointer">
+                        상품 등록+
+                    </div>
                 </div>
                 <div className="myGameList flex justify-between min-h-[600px] h-[80vh]">
                     <div className="w-[50vw]  bg-slate-300 overflow-scroll">
                         <MyVideoList />
                     </div>
-                    <div className=" w-[25vw] ml-[20px]">
-                        <div className=" h-[60%] bg-slate-300 ">찜목록</div>
+                    <div className=" w-[35vw] ml-[20px]">
+                        <div className=" h-[60%] bg-slate-300 ">
+                            주문목록
+                            {orderList &&
+                                orderList.length > 0 &&
+                                orderList.map((item) => {
+                                    return <OrderList key={item.주문번호} orderList={item} />;
+                                })}
+                        </div>
                         <div className=" h-[40%] bg-slate-200"> 유저 정보</div>
                     </div>
                 </div>

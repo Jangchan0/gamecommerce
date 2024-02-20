@@ -118,7 +118,7 @@ const Registration = () => {
             const gameId = await addVideo(gameInfo, [downloadURL], videoDownloadURL, uid);
 
             alert('게시글을 업로드했습니다!');
-            router.push('registration');
+            router.push('/mypage');
 
             // Use gameId here
         } catch (error) {

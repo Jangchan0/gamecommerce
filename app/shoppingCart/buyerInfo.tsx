@@ -9,6 +9,7 @@ declare const window: typeof globalThis & {
 
 const BuyerInfo = (props) => {
     const { shoppingCartItem, handleCartModal } = props;
+
     const totalPrice = shoppingCartItem.reduce((total, item) => total + item.price * item.quantity, 0);
     const [buyerInfo, setBuyerInfo] = useState({
         name: '',
@@ -16,6 +17,8 @@ const BuyerInfo = (props) => {
         address: '',
         phoneNumber: '',
     });
+    const orderInfo = shoppingCartItem.map((item) => ({ [item.name]: item.quantity }));
+
     const uid = UseGetUserUid();
 
     function onClickPayment() {
@@ -25,8 +28,8 @@ const BuyerInfo = (props) => {
         IMP.init('imp36774883');
 
         const data = {
-            pg: 'kakao', // pg사
-            pay_method: 'kakaopay', // 결제 수단
+            pg: 'kakao',
+            pay_method: 'kakaopay',
             merchant_uid: `mid_${new Date().getTime()}`,
             amount: totalPrice,
             name: '아임포트 결제 데이터 시험',
@@ -61,17 +64,18 @@ const BuyerInfo = (props) => {
                             const orderDocRef = doc(db, 'Order', data.merchant_uid);
                             await setDoc(orderDocRef, {
                                 주문번호: data.merchant_uid,
-                                주문상품: item.name,
-                                주문수량: Number(item.quantity),
+                                주문상품: orderInfo,
                                 주문일시: new Date().toISOString(),
                                 구매자: buyerInfo.name,
                                 주소: buyerInfo.address,
                                 uid: uid,
+                                주문상태: '주문완료',
                             });
                         }
                     }
 
                     alert('결제 성공');
+                    localStorage.removeItem('cartState');
                     handleCartModal(false);
                 } catch (error) {
                     console.error('Error updating product stock:', error);

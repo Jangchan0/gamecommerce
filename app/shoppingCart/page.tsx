@@ -17,7 +17,6 @@ export default function ShoppingCart() {
     const [shoppingCartItem, setShoppingCartItem] = useState([]);
     const [userInfo, setUserInfo] = useState();
     const [showBuyerModal, setShowBuyerModal] = useState(false);
-    console.log(showBuyerModal);
 
     const handleSetUserInfo = (user) => {
         setUserInfo(user);
