@@ -140,6 +140,7 @@ export default function DetailPage() {
                                           quantity: quantity,
                                           thumbnail: productInfo.thumbnailURL,
                                           gameDetailPage: `/detail/${gameData.장르}/${gameData.gameId}`,
+                                          uploadUser: gameData.uploadUser,
                                       })
                                     : DropCart()
                             }

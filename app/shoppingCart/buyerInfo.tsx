@@ -9,7 +9,6 @@ declare const window: typeof globalThis & {
 
 const BuyerInfo = (props) => {
     const { shoppingCartItem, handleCartModal } = props;
-    console.log(shoppingCartItem);
 
     const totalPrice = shoppingCartItem.reduce((total, item) => total + item.price * item.quantity, 0);
     const [buyerInfo, setBuyerInfo] = useState({
@@ -18,7 +17,13 @@ const BuyerInfo = (props) => {
         address: '',
         phoneNumber: '',
     });
-    const orderInfo = shoppingCartItem.map((item) => ({ [item.name]: item.quantity }));
+    // const orderInfo = shoppingCartItem.map((item) => ({ [item.name]: { [item.quantity]: [item.uploadUser] } }));
+    const orderInfo = shoppingCartItem.map((item) => ({
+        상품명: item.name,
+        상품수량: item.quantity,
+        판매자: item.uploadUser,
+        주문상태: '주문완료',
+    }));
 
     const uid = UseGetUserUid();
 
@@ -70,7 +75,6 @@ const BuyerInfo = (props) => {
                                 구매자: buyerInfo.name,
                                 주소: buyerInfo.address,
                                 uid: uid,
-                                주문상태: '주문완료',
                             });
                         }
                     }
