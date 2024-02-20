@@ -30,10 +30,9 @@ export default function SignUpComponent() {
         }
     }, [signUpInfo.confirmPassword, signUpInfo.password]);
 
-    const checkUsernameDuplicate = async () => {
-        const usernameExists = await checkIfUsernameExists(signUpInfo.username);
+    const checkUsernameDuplicate = async (e) => {
+        const usernameExists = await checkIfUsernameExists(e);
         setIsUsernameDuplicate(usernameExists);
-        console.log(usernameExists);
     };
 
     const onSignUpHandler = async (e) => {
@@ -84,7 +83,6 @@ export default function SignUpComponent() {
             }
         }
     };
-    console.log(signUpInfo);
 
     return (
         <div className="px-4 py-6 space-y-4">
@@ -103,10 +101,10 @@ export default function SignUpComponent() {
                             type={field.type}
                             value={signUpInfo[field.id]}
                             onChange={(e) => {
-                                if (field.id === 'username') {
-                                    checkUsernameDuplicate();
-                                }
                                 setSignUpInfo({ ...signUpInfo, [field.id]: e.target.value });
+                                if (field.id === 'username') {
+                                    checkUsernameDuplicate(e.target.value);
+                                }
                             }}
                             className="rounded-sm outline-none border h-[40px] px-3"
                         />
@@ -128,16 +126,15 @@ export default function SignUpComponent() {
 
 const checkIfUsernameExists = async (username) => {
     try {
-        const trimmedUsername = username.trim().toLowerCase();
         const usersCollectionRef = collection(db, 'users');
-        const usernameQuery = query(usersCollectionRef, where('username', '==', trimmedUsername));
+        const usernameQuery = query(usersCollectionRef, where('username', '==', username));
 
         const querySnapshot = await getDocs(usernameQuery);
 
         return querySnapshot.size > 0;
     } catch (error) {
         console.error('Error checking username existence:', error);
-        // Handle the error appropriately (e.g., return false or throw an exception)
+
         return false;
     }
 };
