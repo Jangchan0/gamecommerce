@@ -6,7 +6,6 @@ const OrderList = (props) => {
     const item = props.orderList;
     const [isCancelled, setIsCancelled] = useState(false);
     const [cancelledProducts, setCancelledProducts] = useState(new Set());
-    console.log(item);
 
     const orderDate = new Date(item.주문일시);
 

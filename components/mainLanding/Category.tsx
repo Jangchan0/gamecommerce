@@ -17,7 +17,7 @@ export default function Category({ title }) {
         };
         fetchData();
     }, [title]);
-    // console.log(title);
+
     const gameData = categoryData[title];
 
     return (

@@ -22,7 +22,6 @@ export default function DetailPage() {
 
     const productInfo = useFileData(originalProductId);
     const gameData = productInfo?.gameData;
-    console.log(gameData);
 
     const [recommandProducts, setRecommandProducts] = useState(null);
 

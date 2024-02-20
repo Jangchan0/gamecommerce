@@ -20,7 +20,6 @@ const MyPage = () => {
         const fetchData = async () => {
             try {
                 const orderCollectionRef = collection(db, 'Order');
-                console.log(uid);
                 const q = query(orderCollectionRef, where('uid', '==', uid));
                 const querySnapshot = await getDocs(q);
 
