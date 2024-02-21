@@ -61,7 +61,9 @@ const ReviseVideoInfo = () => {
 
                 /////// 수정 삭제 해야하는 부분!!! ///////
 
-                return alert('업데이트 성공!');
+                alert('업데이트 성공!');
+
+                return router.push('/mypage');
             } catch (error) {
                 console.error('Error updating video document:', error);
                 return null; // Return null or any other value to indicate failure

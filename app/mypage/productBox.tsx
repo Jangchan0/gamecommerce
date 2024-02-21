@@ -29,11 +29,11 @@ const ProductBox = (props) => {
 
     const deleteVideo = async () => {
         const gameId = videoInfo.gameId;
-        const desertVideoPath = `video/${gameId}_videoFile.zip`;
-        const desertThumbPath = `thumbnails/${gameId}_thumbnail.jpg`;
+        const desertVideoPath = `video/${gameId}`;
+        const desertThumbPath = `thumbnails/${gameId}`;
 
         try {
-            const q = query(collection(db, 'Video', userUid, 'List'), where('gameId', '==', gameId));
+            const q = query(collection(db, 'Game'), where('gameId', '==', gameId));
             const querySnapshot = await getDocs(q);
 
             // Firestore에서 문서 삭제
@@ -69,9 +69,10 @@ const ProductBox = (props) => {
                 />
             </div>
             <div className="flex flex-col gap-2 bg-slate-300 w-[300px]">
-                <h2 className="text-xl bolder">{videoInfo.영상명}</h2>
+                <h2 className="text-xl bolder">{videoInfo.게임명}</h2>
                 <p className="text-sm">{videoInfo.장르}</p>
-                <p>{videoInfo.영상소개}</p>
+                <p>게임소개: {videoInfo.게임소개}</p>
+                <p>재고수량: {videoInfo.재고수량}</p>
             </div>
             <div className="flex flex-col mx-auto">
                 <button className="buttonCustom" onClick={moveRevisePage}>
