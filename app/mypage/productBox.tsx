@@ -3,14 +3,10 @@
 import Image from 'next/image';
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useRecoilState } from 'recoil';
-import { videoInfoState } from '@/recoil/atoms/recoilAtoms';
-import UseAuthVerification from '@/Hooks/UseAuthVerification';
 import UseGetUserUid from '@/Hooks/UseGetUserUid';
 import { db, storage } from '../firebase';
 import { deleteObject, ref } from 'firebase/storage';
-import { doc, deleteDoc, query, collection, where, getDocs } from 'firebase/firestore';
+import { deleteDoc, query, collection, where, getDocs } from 'firebase/firestore';
 
 const ProductBox = (props) => {
     const router = useRouter();

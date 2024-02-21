@@ -21,6 +21,7 @@ export default function DetailPage() {
     const originalProductId = productIdMatch ? decodeURIComponent(productIdMatch[2]) : null;
 
     const productInfo = useFileData(originalProductId);
+
     const gameData = productInfo?.gameData;
 
     const [recommandProducts, setRecommandProducts] = useState(null);
@@ -152,7 +153,7 @@ export default function DetailPage() {
             </div>
             <div className="pl-12">
                 <h2 className="text-4xl font-bold p-4 mt-12">관련상품</h2>
-                <section className="recommandProduct grid grid-cols-1 md:grid-cols-4 gap-6 p-4 md:p-6">
+                {/* <section className="recommandProduct grid grid-cols-1 md:grid-cols-4 gap-6 p-4 md:p-6">
                     {recommandProducts.map((recommandProduct, index) => {
                         return (
                             <div
@@ -184,7 +185,7 @@ export default function DetailPage() {
                             </div>
                         );
                     })}
-                </section>
+                </section> */}
             </div>
         </>
     );

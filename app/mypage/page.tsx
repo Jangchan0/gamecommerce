@@ -7,6 +7,7 @@ import UseAuthVerification from '@/Hooks/UseAuthVerification';
 import OrderList from './orderList';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import UseGetUserUid from '@/Hooks/UseGetUserUid';
+import ReceiveOrderList from './receiveOrderList';
 
 const MyPage = () => {
     UseAuthVerification();
@@ -50,15 +51,18 @@ const MyPage = () => {
                         <MyGames />
                     </div>
                     <div className=" w-[35vw] ml-[20px]">
-                        <div className=" h-[60%] bg-slate-300 overflow-y-scroll">
-                            주문목록
+                        <div className=" h-2/5 bg-slate-300 overflow-y-scroll">
+                            내 주문목록
                             {orderList &&
                                 orderList.length > 0 &&
                                 orderList.map((item) => {
                                     return <OrderList key={item.주문번호} orderList={item} />;
                                 })}
                         </div>
-                        <div className=" h-[40%] bg-slate-200"> 유저 정보</div>
+                        <div className=" h-3/5 bg-slate-200">
+                            들어온 주문목록
+                            <ReceiveOrderList />
+                        </div>
                     </div>
                 </div>
             </div>

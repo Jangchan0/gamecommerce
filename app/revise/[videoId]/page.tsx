@@ -7,7 +7,7 @@ import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage
 import ComponentTitle from '@/components/ComponentTitle';
 import UseAuthVerification from 'Hooks/UseAuthVerification';
 import Image from 'next/image';
-import { collection, doc, getDoc, getDocs, query, serverTimestamp, setDoc, where } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, setDoc, where } from 'firebase/firestore';
 
 const initialVideoInfo = {
     price: 0,
@@ -46,14 +46,18 @@ const ReviseVideoInfo = () => {
 
         if (!querySnapshot.empty) {
             const docId = querySnapshot.docs[0].id;
-            const docRef = doc(videoCollectionRef, docId);
+
+            const deleteDocRef = doc(videoCollectionRef, `${uid}_${videoInfo.게임명}`);
+            await deleteDoc(deleteDocRef);
+
+            const docRef = doc(videoCollectionRef, `${uid}_${reviseDetailInfo.게임명}`);
 
             const updatedData = {
                 ...videoInfo,
                 ...reviseDetailInfo,
                 thumbnail: thumbnailPaths[0],
                 timestamp: serverTimestamp(),
-                gameId: `${uid}_${videoInfo.게임명}`,
+                gameId: `${uid}_${reviseDetailInfo.게임명}`,
             };
 
             try {
@@ -157,7 +161,7 @@ const ReviseVideoInfo = () => {
             console.error('Error uploading thumbnails or video file:', error);
         }
     };
-    console.log(videoFile);
+
     useEffect(() => {
         const auth = getAuth();
         const unsubscribe = onAuthStateChanged(auth, (user) => {

@@ -1,4 +1,3 @@
-// 커스텀 훅
 import { db } from '@/app/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
