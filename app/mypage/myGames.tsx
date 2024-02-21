@@ -7,7 +7,7 @@ import { db } from '../firebase';
 import UseGetUserUid from '../../Hooks/UseGetUserUid';
 import ProductBox from './productBox';
 
-const MyVideos = () => {
+const MyGames = () => {
     const uid = UseGetUserUid();
     const [forceUpdate, setForceUpdate] = useState(false);
 
@@ -20,11 +20,11 @@ const MyVideos = () => {
                 ? query(
                       videoCollectionRef,
                       limit(5),
-                      where('uploadUser', '==', uid),
+                      where('uploadUserUid', '==', uid),
                       orderBy('timestamp', 'desc'),
                       startAfter(pageParam)
                   )
-                : query(videoCollectionRef, limit(5), where('uploadUser', '==', uid), orderBy('timestamp', 'desc'));
+                : query(videoCollectionRef, limit(5), where('uploadUserUid', '==', uid), orderBy('timestamp', 'desc'));
 
             const querySnapshot = await getDocs(q);
             const videos = querySnapshot.docs.map((doc) => doc.data());
@@ -81,4 +81,4 @@ const MyVideos = () => {
     );
 };
 
-export default MyVideos;
+export default MyGames;

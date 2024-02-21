@@ -62,6 +62,7 @@ const Registration = () => {
                 gameId: gameId,
                 uploadUser: username,
                 downloadTime: 0,
+                uploadUserUid: uid,
             });
         } catch (error) {
             console.error('Error adding video document:', error);

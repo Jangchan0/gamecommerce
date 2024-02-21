@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { db } from '../firebase';
-import MyVideoList from './myVideoList';
+import MyGames from './myGames';
 import UseAuthVerification from '@/Hooks/UseAuthVerification';
 import OrderList from './orderList';
 import { collection, getDocs, query, where } from 'firebase/firestore';
@@ -47,7 +47,7 @@ const MyPage = () => {
                 </div>
                 <div className="myGameList flex justify-between min-h-[600px] h-[80vh]">
                     <div className="w-[50vw]  bg-slate-300 overflow-scroll">
-                        <MyVideoList />
+                        <MyGames />
                     </div>
                     <div className=" w-[35vw] ml-[20px]">
                         <div className=" h-[60%] bg-slate-300 overflow-y-scroll">

@@ -18,22 +18,22 @@ const ProductBox = (props) => {
     const userUid = UseGetUserUid();
 
     const moveRevisePage = () => {
-        if (userUid !== videoInfo.uploadUser) {
+        if (userUid !== videoInfo.uploadUserUid) {
             alert('영상을 업로드한 유저와 계정정보가 일치하지않습니다.');
             router.push('/');
             return;
         }
 
-        router.push(`/revise/${videoInfo.videoId}`);
+        router.push(`/revise/${videoInfo.gameId}`);
     };
 
     const deleteVideo = async () => {
-        const videoId = videoInfo.videoId;
-        const desertVideoPath = `video/${videoId}_videoFile.zip`;
-        const desertThumbPath = `thumbnails/${videoId}_thumbnail.jpg`;
+        const gameId = videoInfo.gameId;
+        const desertVideoPath = `video/${gameId}_videoFile.zip`;
+        const desertThumbPath = `thumbnails/${gameId}_thumbnail.jpg`;
 
         try {
-            const q = query(collection(db, 'Video', userUid, 'List'), where('videoId', '==', videoId));
+            const q = query(collection(db, 'Video', userUid, 'List'), where('gameId', '==', gameId));
             const querySnapshot = await getDocs(q);
 
             // Firestore에서 문서 삭제
@@ -48,7 +48,7 @@ const ProductBox = (props) => {
                 deleteObject(ref(storage, desertThumbPath)),
             ]);
             alert('삭제완료!');
-            onDelete(videoId);
+            onDelete(gameId);
         } catch (error) {
             console.error('Error deleting document: ', error);
         }

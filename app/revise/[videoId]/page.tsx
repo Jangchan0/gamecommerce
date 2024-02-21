@@ -9,6 +9,25 @@ import UseAuthVerification from 'Hooks/UseAuthVerification';
 import Image from 'next/image';
 import { collection, doc, getDoc, getDocs, query, serverTimestamp, setDoc, where } from 'firebase/firestore';
 
+const initialVideoInfo = {
+    price: 0,
+    thumbnail: '',
+    uploadUser: '',
+    videoFile: '',
+    gameId: '',
+    게임명: '',
+    게임소개: '',
+    장르: '',
+};
+
+const videoInfoDefaultValue = {
+    게임명: '',
+    게임소개: '',
+    장르: '',
+    price: 0,
+    재고수량: 0,
+};
+
 const ReviseVideoInfo = () => {
     const router = useRouter();
     const videoQuery = usePathname();
@@ -18,33 +37,21 @@ const ReviseVideoInfo = () => {
 
     const [user, setUser] = useState(null);
 
-    useEffect(() => {
-        const auth = getAuth();
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setUser(user);
-        });
-
-        setThumbnails(videoInfo.thumbnail);
-
-        return () => unsubscribe();
-    }, []);
-
     const uid = user?.uid;
 
     const reviseVideo = async (videoInfo, thumbnailPaths, uid) => {
-        const videoCollectionRef = collection(db, 'Video', uid, 'List');
-        const q = query(videoCollectionRef, where('timestamp', '==', videoInfo.timestamp));
+        const videoCollectionRef = collection(db, 'Game');
+        const q = query(videoCollectionRef, where('gameId', '==', videoInfo.gameId));
         const querySnapshot = await getDocs(q);
 
         if (!querySnapshot.empty) {
             const docId = querySnapshot.docs[0].id;
-            const docRef = doc(db, 'Video', uid, 'List', docId);
-            const thumbnailStorageRef = ref(storage, `thumbnails/${uid}_${videoInfo.게임명}_thumbnail.jpg`);
+            const docRef = doc(videoCollectionRef, docId);
 
             const updatedData = {
                 ...videoInfo,
                 ...reviseDetailInfo,
-                thumbnail: thumbnailPaths[0], // 첫 번째 썸네일을 메인 썸네일로 설정
+                thumbnail: thumbnailPaths[0],
                 timestamp: serverTimestamp(),
                 gameId: `${uid}_${videoInfo.게임명}`,
             };
@@ -54,7 +61,7 @@ const ReviseVideoInfo = () => {
 
                 /////// 수정 삭제 해야하는 부분!!! ///////
 
-                return uid;
+                return alert('업데이트 성공!');
             } catch (error) {
                 console.error('Error updating video document:', error);
                 return null; // Return null or any other value to indicate failure
@@ -65,7 +72,6 @@ const ReviseVideoInfo = () => {
         }
     };
 
-    const [videoFile, setVideoFile] = useState<Blob | Uint8Array | ArrayBuffer>();
     const [thumbnails, setThumbnails] = useState([null]);
     const [videoImg, setVideoImg] = useState([]);
     const [isImageUpdated, setIsImageUpdated] = useState(false);
@@ -82,32 +88,13 @@ const ReviseVideoInfo = () => {
         }
     };
 
-    const initialVideoInfo = {
-        price: 0,
-        thumbnail: '',
-        uploadUser: '',
-        videoFile: '',
-        gameId: '',
-        게임명: '',
-        게임소개: '',
-        장르: '',
-        판매여부: false,
-    };
-
-    const videoInfoDefaultValue = {
-        게임명: '',
-        게임소개: '',
-        장르: '',
-        price: 0,
-        재고수량: 0,
-    };
-
     const [videoInfo, setVideoInfo] = useState(initialVideoInfo);
     const [reviseDetailInfo, setReviseDetailInfo] = useState(videoInfoDefaultValue);
+    const [videoFile, setVideoFile] = useState<Blob | Uint8Array | ArrayBuffer>();
 
     const extractNecessaryInfo = (sourceInfo) => {
-        const { 게임명, 장르, 게임소개, 판매여부, 재고수량, price } = sourceInfo;
-        return { 게임명, 장르, 게임소개, 판매여부, 재고수량, price };
+        const { 게임명, 장르, 게임소개, 재고수량, price } = sourceInfo;
+        return { 게임명, 장르, 게임소개, 재고수량, price };
     };
 
     const handleInputChange = (key: string, value: string | number | boolean) => {
@@ -120,7 +107,7 @@ const ReviseVideoInfo = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const videoCollectionRef = collection(db, 'Video', uid, 'List');
+                const videoCollectionRef = collection(db, 'Game');
                 const q = query(videoCollectionRef, where('gameId', '==', modifiedVideoId));
                 const querySnapshot = await getDocs(q);
 
@@ -129,29 +116,30 @@ const ReviseVideoInfo = () => {
 
                 const extractedInfo = extractNecessaryInfo(data);
                 setReviseDetailInfo(extractedInfo);
-                // setVideoInfo({
-                //     ...videoInfo,
-                //     thumbnail: thumbnails[0] as unknown as string,
-                // });
             } catch (error) {
                 console.error('Error getting document:', error);
             }
         };
 
         fetchData();
-    }, [modifiedVideoId, uid]);
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const oldVideoStorageRef = ref(storage, `video/${uid}_${videoInfo.게임명}`);
 
-        const thumbnailStorageRef = ref(storage, `thumbnails/${uid}_${videoInfo.게임명}_thumbnail.jpg`);
-        const videotorageRef = ref(storage, `video/${uid}_${videoInfo.게임명}_videoFile.zip`);
-        // const metadata = {
-        //     contentType: 'image/jpeg',
-        // };
+        await deleteObject(oldVideoStorageRef);
+        const oldThumbnailStorageRef = ref(storage, `thumbnails/${uid}_${videoInfo.게임명}`);
+        await deleteObject(oldThumbnailStorageRef);
+
+        const thumbnailStorageRef = ref(storage, `thumbnails/${uid}_${reviseDetailInfo.게임명}`);
+        const videotorageRef = ref(storage, `video/${uid}_${reviseDetailInfo.게임명}`);
+        const metadata = {
+            contentType: 'image/jpeg',
+        };
 
         try {
-            const snapshot = await uploadBytes(thumbnailStorageRef, thumbnails);
+            const snapshot = await uploadBytes(thumbnailStorageRef, thumbnails, metadata);
             const downloadURL = await getDownloadURL(snapshot.ref);
             console.log('Thumbnail Download URL:', downloadURL);
 
@@ -167,6 +155,16 @@ const ReviseVideoInfo = () => {
             console.error('Error uploading thumbnails or video file:', error);
         }
     };
+    console.log(videoFile);
+    useEffect(() => {
+        const auth = getAuth();
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            setUser(user);
+        });
+        setThumbnails(videoInfo.thumbnail);
+        setVideoFile(videoInfo.videoFile);
+        return () => unsubscribe();
+    }, [videoInfo]);
 
     return (
         <>
@@ -178,7 +176,8 @@ const ReviseVideoInfo = () => {
                             Upload GameVideo:
                         </label>
                         <div className="border p-2 rounded-md bg-white">
-                            <span>{videoInfo.gameId ? '수정할 파일: ' + videoInfo.게임명 : 'No file selected'}</span>
+                            <p>파일선택을 안할시 기존 영상파일로 유지됩니다</p>
+                            <input type="file" defaultValue={videoFile} />
                         </div>
 
                         <div className="photoThumbnail flex flex-col w-[50vw] mt-4 space-y-4">
