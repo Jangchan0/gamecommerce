@@ -132,6 +132,7 @@ const Registration = () => {
         try {
             const snapshot = await uploadBytes(thumbnailStorageRef, thumbnails, metadata);
             const downloadURL = await getDownloadURL(snapshot.ref);
+            console.log(downloadURL);
 
             const videonap = await uploadBytes(videotorageRef, videoFile as Blob | Uint8Array | ArrayBuffer);
             const videoDownloadURL = await getDownloadURL(videonap.ref);

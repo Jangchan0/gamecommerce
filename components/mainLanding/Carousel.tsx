@@ -91,9 +91,10 @@ export default class Carousel extends Component {
         return (
             <div className="carousel w-[700px] h-[300px] bg-slate-500 mx-auto mb-12">
                 <Slider {...this.settings}>
-                    {this.state.gameItem.map((item) => (
-                        <CarouselItems key={item.gameData.게임명} videoItem={item} />
-                    ))}
+                    {this.state.gameItem.map((item) => {
+                        console.log(this.state.gameItem);
+                        return <CarouselItems key={item.gameData.게임명} videoItem={item} />;
+                    })}
                 </Slider>
             </div>
         );

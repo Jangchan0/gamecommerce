@@ -55,7 +55,7 @@ const ReviseVideoInfo = () => {
             const updatedData = {
                 ...videoInfo,
                 ...reviseDetailInfo,
-                thumbnail: thumbnailPaths[0],
+                thumbnail: isImageUpdated ? thumbnailPaths[0] : thumbnails,
                 timestamp: serverTimestamp(),
                 gameId: `${uid}_${reviseDetailInfo.게임명}`,
             };
@@ -78,7 +78,7 @@ const ReviseVideoInfo = () => {
         }
     };
 
-    const [thumbnails, setThumbnails] = useState([null]);
+    const [thumbnails, setThumbnails] = useState([]);
     const [videoImg, setVideoImg] = useState([]);
     const [isImageUpdated, setIsImageUpdated] = useState(false);
 
@@ -147,11 +147,9 @@ const ReviseVideoInfo = () => {
         try {
             const snapshot = await uploadBytes(thumbnailStorageRef, thumbnails, metadata);
             const downloadURL = await getDownloadURL(snapshot.ref);
-            console.log('Thumbnail Download URL:', downloadURL);
 
             const videonap = await uploadBytes(videotorageRef, videoFile as Blob | Uint8Array | ArrayBuffer);
             const videoDownloadURL = await getDownloadURL(videonap.ref);
-            console.log('Video File Download URL:', videoDownloadURL);
 
             // 게임 데이터 저장
             await reviseVideo(videoInfo, [downloadURL], uid);
@@ -221,6 +219,28 @@ const ReviseVideoInfo = () => {
                                             className="w-[300px] h-[100px] rounded-sm"
                                             style={{ resize: 'none' }}
                                         />
+                                    ) : key === '장르' ? (
+                                        <select
+                                            value={value as string}
+                                            onChange={(e) => handleInputChange(key, e.target.value)}
+                                            className="w-[300px] rounded-sm outline-none "
+                                        >
+                                            <option value="" disabled>
+                                                --장르를 선택해주세요--
+                                            </option>
+                                            <option value="액션">액션</option>
+                                            <option value="어드벤처">어드벤처</option>
+                                            <option value="캐주얼">캐주얼</option>
+                                            <option value="인디">인디</option>
+                                            <option value="대규모">대규모</option>
+                                            <option value="멀티 플레이어">멀티 플레이어</option>
+                                            <option value="레이싱">레이싱</option>
+                                            <option value="시뮬레이션">시뮬레이션</option>
+                                            <option value="RPG">RPG</option>
+                                            <option value="스포츠">스포츠</option>
+                                            <option value="전략">전략</option>
+                                            <option value="기타">기타</option>
+                                        </select>
                                     ) : (
                                         // Default text input
                                         <input
