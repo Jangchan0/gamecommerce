@@ -50,7 +50,7 @@ const MyPage = () => {
                     <div className="w-[50vw]  bg-slate-300 overflow-scroll">
                         <MyGames />
                     </div>
-                    <div className=" w-[35vw] ml-[20px]">
+                    <div className=" w-[35vw] ml-[20px] flex flex-col justify-between">
                         <div className=" h-2/5 bg-slate-300 overflow-y-scroll">
                             내 주문목록
                             {orderList &&
@@ -59,9 +59,9 @@ const MyPage = () => {
                                     return <OrderList key={item.주문번호} orderList={item} />;
                                 })}
                         </div>
-                        <div className=" h-3/5 bg-slate-200">
+                        <div className=" h-1/2 bg-slate-200 overflow-y-scroll ">
                             들어온 주문목록
-                            <ReceiveOrderList />
+                            <ReceiveOrderList uid={uid} />
                         </div>
                     </div>
                 </div>

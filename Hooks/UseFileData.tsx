@@ -10,7 +10,6 @@ const UseFileData = (fileName: string) => {
     useEffect(() => {
         const fetchFileData = async () => {
             try {
-                console.log(fileName);
                 // Firestore에서 Game 컬렉션에서 fileName과 일치하는 게임 정보를 가져오는 로직
                 const gameDocRef = doc(db, 'Game', fileName);
                 const gameSnapshot = await getDoc(gameDocRef);

@@ -17,11 +17,13 @@ const BuyerInfo = (props) => {
         address: '',
         phoneNumber: '',
     });
-    // const orderInfo = shoppingCartItem.map((item) => ({ [item.name]: { [item.quantity]: [item.uploadUser] } }));
+
+    const uploadUids = shoppingCartItem.map((item) => item.uploadUserUid);
     const orderInfo = shoppingCartItem.map((item) => ({
         상품명: item.name,
         상품수량: item.quantity,
         판매자: item.uploadUser,
+        uploadUserUid: item.uploadUserUid,
         주문상태: '주문완료',
     }));
 
@@ -75,6 +77,7 @@ const BuyerInfo = (props) => {
                                 구매자: buyerInfo.name,
                                 주소: buyerInfo.address,
                                 uid: uid,
+                                uploadUids: uploadUids,
                             });
                         }
                     }

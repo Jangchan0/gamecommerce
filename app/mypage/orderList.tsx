@@ -65,7 +65,7 @@ const OrderList = (props) => {
                                         <div>
                                             {!isCancelled && (
                                                 <button onClick={() => handleCancelProduct(product.상품명)}>
-                                                    상품취소
+                                                    주문취소
                                                 </button>
                                             )}
                                             {isCancelled && <p>주문이 취소되었습니다.</p>}
