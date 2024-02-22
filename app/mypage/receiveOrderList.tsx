@@ -11,6 +11,9 @@ enum OrderStatus {
 
 const ReceiveOrderList = ({ uid }) => {
     const [receiveOrder, setReceiveOrder] = useState<any[]>([]);
+    const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+
+    const [docId, setDocId] = useState('');
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -27,6 +30,9 @@ const ReceiveOrderList = ({ uid }) => {
                     const data = doc.data();
 
                     const orderItems = data.주문상품;
+                    const docId = data.주문번호;
+
+                    setDocId(docId);
 
                     for (let item of orderItems) {
                         if (item.uploadUserUid === uid) {
@@ -43,8 +49,8 @@ const ReceiveOrderList = ({ uid }) => {
         fetchOrders();
     }, [uid]);
 
-    const updateOrderStatus = async (orderDocId: string, productName: string, newStatus: OrderStatus) => {
-        const orderDocRef = doc(db, 'Order', orderDocId);
+    const updateOrderStatus = async (productName: string, newStatus: OrderStatus) => {
+        const orderDocRef = doc(db, 'Order', docId);
 
         try {
             const orderDoc = await getDoc(orderDocRef);
@@ -63,6 +69,7 @@ const ReceiveOrderList = ({ uid }) => {
             });
 
             await updateDoc(orderDocRef, { 주문상품: updatedItems });
+            alert('업데이트 완료');
         } catch (error) {
             console.error('Error updating order status:', error);
         }
@@ -81,7 +88,26 @@ const ReceiveOrderList = ({ uid }) => {
                                   <div>주문수량: {item.상품수량}</div>
                                   <div>주문상태: {item.주문상태}</div>
                               </div>
-                              <button>상품상태 변경</button>
+                              <select
+                                  defaultValue={item.주문상태}
+                                  onChange={(event) => setSelectedStatus(event.target.value)}
+                              >
+                                  <option value={OrderStatus.ORDER_COMPLETE}>{OrderStatus.ORDER_COMPLETE}</option>
+                                  <option value={OrderStatus.WAITING_FOR_SHIPMENT}>
+                                      {OrderStatus.WAITING_FOR_SHIPMENT}
+                                  </option>
+                                  <option value={OrderStatus.SHIPMENT_STARTED}>{OrderStatus.SHIPMENT_STARTED}</option>
+                                  <option value={OrderStatus.ORDER_CANCELLED}>{OrderStatus.ORDER_CANCELLED}</option>
+                              </select>
+                              <button
+                                  onClick={() => {
+                                      if (selectedStatus) {
+                                          updateOrderStatus(item.상품명, selectedStatus as OrderStatus);
+                                      }
+                                  }}
+                              >
+                                  변경 확인
+                              </button>
                           </div>
                       );
                   })
