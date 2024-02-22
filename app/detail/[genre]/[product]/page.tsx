@@ -68,52 +68,6 @@ export default function DetailPage() {
                     <p className="text-sm text-gray-500">잔여수량: {gameData['재고수량']}</p>
                 </div>
                 <div className="grid gap-4 md:gap-10 mt-12">
-                    <div>
-                        <div className="grid grid-cols-3 gap-4">
-                            <div className="flex flex-col items-center">
-                                <img
-                                    alt="Product Image 1"
-                                    className="object-cover rounded-lg"
-                                    height={100}
-                                    src="/placeholder.svg"
-                                    style={{
-                                        aspectRatio: '100/100',
-                                        objectFit: 'cover',
-                                    }}
-                                    width={100}
-                                />
-                                <p className="text-sm text-center">Product Info 1</p>
-                            </div>
-                            <div className="flex flex-col items-center">
-                                <img
-                                    alt="Product Image 2"
-                                    className="object-cover rounded-lg"
-                                    height={100}
-                                    src="/placeholder.svg"
-                                    style={{
-                                        aspectRatio: '100/100',
-                                        objectFit: 'cover',
-                                    }}
-                                    width={100}
-                                />
-                                <p className="text-sm text-center">Product Info 2</p>
-                            </div>
-                            <div className="flex flex-col items-center">
-                                <img
-                                    alt="Product Image 3"
-                                    className="object-cover rounded-lg"
-                                    height={100}
-                                    src="/placeholder.svg"
-                                    style={{
-                                        aspectRatio: '100/100',
-                                        objectFit: 'cover',
-                                    }}
-                                    width={100}
-                                />
-                                <p className="text-sm text-center">Product Info 3</p>
-                            </div>
-                        </div>
-                    </div>
                     <div className="px-2 py-1 gap-4 text-sm leading-loose bg-slate-200 rounded-md h-[200px]">
                         <h3 className="text-2xl font-bold mb-2">게임 소개</h3>
                         <p>{gameData.게임소개}</p>
@@ -153,7 +107,7 @@ export default function DetailPage() {
             </div>
             <div className="pl-12">
                 <h2 className="text-4xl font-bold p-4 mt-12">관련상품</h2>
-                {/* <section className="recommandProduct grid grid-cols-1 md:grid-cols-4 gap-6 p-4 md:p-6">
+                <section className="recommandProduct grid grid-cols-1 md:grid-cols-4 gap-6 p-4 md:p-6">
                     {recommandProducts.map((recommandProduct, index) => {
                         return (
                             <div
@@ -165,27 +119,28 @@ export default function DetailPage() {
                                     href={`/detail/${recommandProduct.gameData.장르}/${recommandProduct.gameData.gameId}`}
                                 >
                                     <span className="sr-only">View</span>
+
+                                    <img
+                                        alt={`Product ${index + 1}`}
+                                        className="object-cover w-full h-64"
+                                        height={400}
+                                        src={recommandProduct.thumbnailURL || '/placeholder.svg'}
+                                        style={{
+                                            aspectRatio: '500/400',
+                                            objectFit: 'cover',
+                                        }}
+                                        width={500}
+                                    />
+                                    <div className="bg-white p-4">
+                                        <h3 className="font-bold text-xl">{recommandProduct.gameData.게임명}</h3>
+                                        <p className="text-sm text-gray-500">{recommandProduct.gameData.장르}</p>
+                                        <h4 className="font-semibold text-lg md:text-xl">{`$ ${recommandProduct.gameData.price}`}</h4>
+                                    </div>
                                 </Link>
-                                <img
-                                    alt={`Product ${index + 1}`}
-                                    className="object-cover w-full h-64"
-                                    height={400}
-                                    src={recommandProduct.thumbnailURL || '/placeholder.svg'}
-                                    style={{
-                                        aspectRatio: '500/400',
-                                        objectFit: 'cover',
-                                    }}
-                                    width={500}
-                                />
-                                <div className="bg-white p-4">
-                                    <h3 className="font-bold text-xl">{recommandProduct.gameData.게임명}</h3>
-                                    <p className="text-sm text-gray-500">{recommandProduct.gameData.장르}</p>
-                                    <h4 className="font-semibold text-lg md:text-xl">{`$ ${recommandProduct.gameData.price}`}</h4>
-                                </div>
                             </div>
                         );
                     })}
-                </section> */}
+                </section>
             </div>
         </>
     );
