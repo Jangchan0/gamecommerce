@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { db, storage } from '../firebase';
@@ -12,12 +12,24 @@ import uploadImg from '@/public/uploadImg.png';
 import UseGetUserInfo from '@/Hooks/UseGetUserInfo';
 import UseGetUserUid from '@/Hooks/UseGetUserUid';
 
+const initialGameInfo = {
+    게임명: '',
+    장르: '',
+    게임소개: '',
+    price: 0,
+    재고수량: 0,
+};
+
 const Registration = () => {
     const router = useRouter();
     UseAuthVerification();
 
     const uid = UseGetUserUid();
 
+    const [videoFile, setVideoFile] = useState<Blob | Uint8Array | ArrayBuffer>();
+    const [thumbnails, setThumbnails] = useState([null]);
+    const [videoImg, setVideoImg] = useState([]);
+    const [gameInfo, setGameInfo] = useState(initialGameInfo);
     const [userEmail, setUserEmail] = useState();
     const [username, setUsername] = useState();
 
@@ -27,13 +39,7 @@ const Registration = () => {
 
     UseGetUserInfo(handleSetUserInfo);
 
-    useEffect(() => {
-        if (userEmail) {
-            getUserByUsername(userEmail);
-        }
-    }, [userEmail]);
-
-    async function getUserByUsername(userEmail: string) {
+    const getUserByUsername = useCallback(async (userEmail: string) => {
         const userCollectionRef = collection(db, 'users');
 
         const q = query(userCollectionRef, where('email', '==', userEmail));
@@ -47,7 +53,13 @@ const Registration = () => {
         } else {
             console.log('No user found with the specified email.');
         }
-    }
+    }, []);
+
+    useEffect(() => {
+        if (userEmail) {
+            getUserByUsername(userEmail);
+        }
+    }, [getUserByUsername, userEmail]);
 
     const addVideo = async (gameInfo, thumbnailPaths, videoFileURL, uid) => {
         const gameId = `${uid}_${gameInfo.게임명}`;
@@ -69,9 +81,6 @@ const Registration = () => {
             return null; // Return null or any other value to indicate failure
         }
     };
-    const [videoFile, setVideoFile] = useState<Blob | Uint8Array | ArrayBuffer>();
-    const [thumbnails, setThumbnails] = useState([null]);
-    const [videoImg, setVideoImg] = useState([]);
 
     const handleThumbnailChange = (event) => {
         let newThumbnails = thumbnails;
@@ -88,16 +97,6 @@ const Registration = () => {
     const handleVideoFileChange = (e) => {
         setVideoFile(e.target.files[0]);
     };
-
-    const initialGameInfo = {
-        게임명: '',
-        장르: '',
-        게임소개: '',
-        price: 0,
-        재고수량: 0,
-    };
-
-    const [gameInfo, setGameInfo] = useState(initialGameInfo);
 
     const handleInputChange = (key: string, value: string | number | boolean) => {
         setGameInfo((prevVideoInfo) => ({
@@ -117,7 +116,7 @@ const Registration = () => {
         }
 
         // Check if both video file and thumbnail are selected
-        if (!thumbnails) {
+        if (!videoImg.url) {
             alert('썸네일을 선택해주세요');
             return;
         }
