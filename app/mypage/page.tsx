@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { db } from '../firebase';
 import MyGames from './myGames';
@@ -16,26 +16,26 @@ const MyPage = () => {
 
     const uid = UseGetUserUid();
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const orderCollectionRef = collection(db, 'Order');
-                const q = query(orderCollectionRef, where('uid', '==', uid));
-                const querySnapshot = await getDocs(q);
+    const fetchData = useCallback(async () => {
+        try {
+            const orderCollectionRef = collection(db, 'Order');
+            const q = query(orderCollectionRef, where('uid', '==', uid));
+            const querySnapshot = await getDocs(q);
 
-                const orders = [];
-                querySnapshot.forEach((doc) => {
-                    orders.push(doc.data());
-                });
+            const orders = [];
+            querySnapshot.forEach((doc) => {
+                orders.push(doc.data());
+            });
 
-                setOrderList(orders);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
-        fetchData();
+            setOrderList(orders);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
     }, [uid]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     return (
         <>
