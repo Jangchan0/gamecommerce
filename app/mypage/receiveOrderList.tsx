@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { db } from '../firebase';
 import { collection, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 
@@ -49,31 +49,34 @@ const ReceiveOrderList = ({ uid }) => {
         fetchOrders();
     }, [uid]);
 
-    const updateOrderStatus = async (productName: string, newStatus: OrderStatus) => {
-        const orderDocRef = doc(db, 'Order', docId);
+    const updateOrderStatus = useCallback(
+        async (productName: string, newStatus: OrderStatus) => {
+            const orderDocRef = doc(db, 'Order', docId);
 
-        try {
-            const orderDoc = await getDoc(orderDocRef);
-            const orderData = orderDoc.data();
-            const orderItems = orderData.주문상품;
+            try {
+                const orderDoc = await getDoc(orderDocRef);
+                const orderData = orderDoc.data();
+                const orderItems = orderData.주문상품;
 
-            const updatedItems = orderItems.map((item) => {
-                if (item.상품명 === productName) {
-                    return {
-                        ...item,
-                        주문상태: newStatus,
-                    };
-                } else {
-                    return item;
-                }
-            });
+                const updatedItems = orderItems.map((item) => {
+                    if (item.상품명 === productName) {
+                        return {
+                            ...item,
+                            주문상태: newStatus,
+                        };
+                    } else {
+                        return item;
+                    }
+                });
 
-            await updateDoc(orderDocRef, { 주문상품: updatedItems });
-            alert('업데이트 완료');
-        } catch (error) {
-            console.error('Error updating order status:', error);
-        }
-    };
+                await updateDoc(orderDocRef, { 주문상품: updatedItems });
+                alert('업데이트 완료');
+            } catch (error) {
+                console.error('Error updating order status:', error);
+            }
+        },
+        [docId]
+    );
 
     const isReceiveOrder = receiveOrder && receiveOrder.length > 0;
 
