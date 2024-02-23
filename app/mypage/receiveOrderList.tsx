@@ -15,39 +15,44 @@ const ReceiveOrderList = ({ uid }) => {
 
     const [docId, setDocId] = useState('');
 
-    useEffect(() => {
-        const fetchOrders = async () => {
-            const orderCollectionRef = collection(db, 'Order');
+    const fetchOrders = useCallback(async () => {
+        if (!uid) {
+            return;
+        }
 
-            const q = query(orderCollectionRef, where('uploadUids', 'array-contains', uid));
+        const orderCollectionRef = collection(db, 'Order');
 
-            try {
-                const querySnapshot = await getDocs(q);
-                const matchingItems: any[] = [];
+        const q = query(orderCollectionRef, where('uploadUids', 'array-contains', uid));
 
-                // Process the documents
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
+        try {
+            const querySnapshot = await getDocs(q);
+            const matchingItems: any[] = [];
 
-                    const orderItems = data.주문상품;
-                    const docId = data.주문번호;
+            // Process the documents
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
 
-                    setDocId(docId);
+                const orderItems = data.주문상품;
+                const docId = data.주문번호;
 
-                    for (let item of orderItems) {
-                        if (item.uploadUserUid === uid) {
-                            matchingItems.push(item);
-                        }
-                        setReceiveOrder(matchingItems);
+                setDocId(docId);
+
+                for (let item of orderItems) {
+                    if (item.uploadUserUid === uid) {
+                        matchingItems.push(item);
                     }
-                });
-            } catch (error) {
-                console.error('Error fetching orders:', error);
-            }
-        };
+                }
+            });
 
-        fetchOrders();
+            setReceiveOrder(matchingItems);
+        } catch (error) {
+            console.error('Error fetching orders:', error);
+        }
     }, [uid]);
+
+    useEffect(() => {
+        fetchOrders();
+    }, [fetchOrders]);
 
     const updateOrderStatus = useCallback(
         async (productName: string, newStatus: OrderStatus) => {
