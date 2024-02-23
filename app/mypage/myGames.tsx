@@ -12,19 +12,19 @@ const MyGames = () => {
     const [forceUpdate, setForceUpdate] = useState(false);
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
-        uid,
+        ['myGames', uid],
         async ({ pageParam = null }) => {
             const videoCollectionRef = collection(db, 'Game');
 
-            const q = pageParam
-                ? query(
-                      videoCollectionRef,
-                      limit(5),
-                      where('uploadUserUid', '==', uid),
-                      orderBy('timestamp', 'desc'),
-                      startAfter(pageParam)
-                  )
-                : query(videoCollectionRef, limit(5), where('uploadUserUid', '==', uid), orderBy('timestamp', 'desc'));
+            let q = query(
+                videoCollectionRef,
+                where('uploadUserUid', '==', uid),
+                orderBy('timestamp', 'desc'),
+                limit(5)
+            );
+            if (pageParam) {
+                q = query(q, startAfter(pageParam));
+            }
 
             const querySnapshot = await getDocs(q);
             const videos = querySnapshot.docs.map((doc) => doc.data());
@@ -68,7 +68,7 @@ const MyGames = () => {
                                 <ProductBox
                                     key={index}
                                     videoInfo={video}
-                                    onDelete={(onDelete) => deleteVideoAndUpdateList(onDelete)}
+                                    onDelete={(onDelete: any) => deleteVideoAndUpdateList(onDelete)}
                                 />
                             </div>
                         ))}

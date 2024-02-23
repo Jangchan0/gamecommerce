@@ -117,7 +117,7 @@ const Registration = () => {
 
         // Check if both video file and thumbnail are selected
         if (!videoImg.url) {
-            alert('썸네일을 선택해주세요');
+            alert('상품이미지를 선택해주세요');
             return;
         }
 
@@ -192,7 +192,6 @@ const Registration = () => {
                         </div>
                     </div>
                     <div className="VideoInfo bg-slate-300 w-[400px]">
-                        {/* Video information form */}
                         <form onSubmit={handleSubmit} className="w-[300px] mx-auto pt-10 ">
                             {Object.entries(gameInfo).map(([key, value]) => (
                                 <div key={key} className="mb-4 ">
