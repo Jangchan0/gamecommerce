@@ -28,17 +28,17 @@ const Nav = () => {
                     <div className="pl-7 pt-2 ">
                         {officialGame.map((cate, i) => (
                             <Link key={i} href={cate.link}>
-                                <h3 className="mb-3 text-lg cursor-pointer">{cate.title}</h3>
+                                <h3 className="mb-2 text-lg cursor-pointer">{cate.title}</h3>
                             </Link>
                         ))}
                     </div>
                 </div>
 
-                <div className="navUserInfo flex flex-col mt-4 ">
+                <div className="navUserInfo flex flex-col  ">
                     <div>
                         <CartNumber />
                     </div>
-                    <div className="flex justify-between mb-6">
+                    <div className="flex justify-between ">
                         <p>유저 아이디</p>
                         <p>setting</p>
                     </div>
