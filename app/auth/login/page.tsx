@@ -11,6 +11,7 @@ import {
     signOut,
 } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const Login = () => {
     const router = useRouter();
@@ -66,21 +67,48 @@ const Login = () => {
     };
 
     return (
-        <div className="Login">
-            <h2>로그인</h2>
-            <form>
-                <div>
-                    <label>이메일 : </label>
-                    <input type="email" value={email} name="email" onChange={onChange} required></input>
+        <div className="flex-col flex w-full h-full justify-center items-center">
+            <div className="space-y-1">
+                <div className="text-2xl">Login</div>
+            </div>
+            <div>
+                <div className="space-y-4">
+                    <div className="space-y-2 flex flex-col ">
+                        <label htmlFor="email">Email</label>
+                        <input
+                            id="email"
+                            type="email"
+                            value={email}
+                            placeholder="m@example.com"
+                            name="email"
+                            onChange={onChange}
+                            className="w-96 border-black border-solid border px-2 h-12 rounded-sm"
+                            required
+                        />
+                    </div>
+                    <div className="space-y-2 flex flex-col">
+                        <label htmlFor="password">Password</label>
+                        <input
+                            id="password"
+                            value={password}
+                            placeholder="Password"
+                            type="password"
+                            name="password"
+                            onChange={onChange}
+                            className="w-96 border-black border-solid border px-2 h-12 rounded-sm"
+                            required
+                        />
+                    </div>
                 </div>
-                <div>
-                    <label>비밀번호 : </label>
-                    <input type="password" value={password} name="password" onChange={onChange} required></input>
-                </div>
-                <button onClick={signUp}>회원가입</button>
-                <button onClick={signIn}>로그인</button>
-                <button onClick={logOut}>로그아웃</button>
-            </form>
+            </div>
+            <div className="flex flex-col items-center">
+                <button className="w-96 h-12 bg-black text-white rounded-md mt-8 mb-4" onClick={signIn}>
+                    Login
+                </button>
+                <Link href={'/auth/signUp'}>
+                    <p className="text-slate-400 ">계정이 없으십니까? 회원가입하세요!</p>
+                </Link>
+            </div>
         </div>
     );
 };
