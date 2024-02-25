@@ -1,4 +1,5 @@
-import React from 'react';
+'use client';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import CartNumber from './CartNumber';
 import Logo from './Logo';
@@ -39,8 +40,9 @@ const Nav = () => {
                         <CartNumber />
                     </div>
                     <div className="flex justify-between ">
-                        <p>유저 아이디</p>
-                        <p>setting</p>
+                        <Link href={'/mypage'}>
+                            <p>마이페이지</p>
+                        </Link>
                     </div>
                 </div>
             </div>
