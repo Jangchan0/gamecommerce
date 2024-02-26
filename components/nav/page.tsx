@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
-import CartNumber from './CartNumber';
+import CartNumber from './cartNumber';
 import Logo from './Logo';
 
 const officialGame = [
