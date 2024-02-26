@@ -5,7 +5,7 @@ import { getDownloadURL, ref as storageRef } from 'firebase/storage';
 import { db, storage } from '../app/firebase';
 
 const UseFileData = (fileName: string) => {
-    const [fileData, setFileData] = useState(null);
+    const [fileData, setFileData] = useState<any>(null);
 
     useEffect(() => {
         const fetchFileData = async () => {
