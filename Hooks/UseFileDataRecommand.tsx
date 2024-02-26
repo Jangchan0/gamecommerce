@@ -3,7 +3,7 @@ import { getDocs, collection, doc, getDoc } from 'firebase/firestore';
 import { getDownloadURL, ref as storageRef } from 'firebase/storage';
 import { db, storage } from '../app/firebase';
 
-const UseFileDataRecommand = async (genre) => {
+const UseFileDataRecommand = async (genre: string | null) => {
     try {
         // Firestore에서 Game 컬렉션에서 genre과 일치하는 게임 정보를 가져오는 로직
         const gameQuery = collection(db, 'Game');

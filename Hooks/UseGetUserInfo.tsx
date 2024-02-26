@@ -2,7 +2,7 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useEffect } from 'react';
 
-const UseGetUserInfo = (callback) => {
+const UseGetUserInfo = (callback: any) => {
     useEffect(() => {
         const auth = getAuth();
         const unsubscribe = onAuthStateChanged(auth, (user) => {
