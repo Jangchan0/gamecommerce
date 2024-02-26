@@ -16,7 +16,7 @@ const UseGetCategory = async (genre: string): Promise<GenreGames> => {
         genreGames[genre] = genreGames[genre] || [];
         genreGames[genre].push(doc.data());
     });
-    console.log(genreGames);
+
     return genreGames;
 };
 
