@@ -1,14 +1,12 @@
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { User, getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 
-const UseGetUserUid = () => {
-    const [user, setUser] = useState<string>('');
+const UseGetUserUid = (): string => {
+    const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
         const auth = getAuth();
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setUser(user as unknown as string);
-        });
+        const unsubscribe = onAuthStateChanged(auth, (authUser) => setUser(authUser));
 
         return () => unsubscribe();
     }, []);
