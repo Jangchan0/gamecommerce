@@ -1,5 +1,5 @@
 'use client';
-import React, { Component, useEffect, useState } from 'react';
+import React, { Component } from 'react';
 import Slider from 'react-slick';
 import CarouselItems from './CarouselItems';
 import 'slick-carousel/slick/slick.css';

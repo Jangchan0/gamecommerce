@@ -13,7 +13,7 @@ const UseGetUserUid = () => {
         return () => unsubscribe();
     }, []);
 
-    return user?.uid;
+    return user?.uid || '';
 };
 
 export default UseGetUserUid;
